@@ -445,6 +445,33 @@ h1 {
   margin-right: auto;
 }
 
+.sheet-actions.wrap {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.sync-banner {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.sync-banner.ok {
+  background: var(--accent-soft);
+}
+
+.sync-banner.warn {
+  background: color-mix(in srgb, var(--scada) 16%, var(--paper));
+}
+
+.sync-error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.92rem;
+}
+
 @media (max-width: 420px) {
   .app {
     padding-top: 12px;
