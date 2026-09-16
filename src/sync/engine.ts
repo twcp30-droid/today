@@ -1,5 +1,4 @@
-import { stateTimestamp, touchState } from "../storage";
-import type { AppState } from "../types";
+import { stateTimestamp, touchState, type StoredState } from '../storage'
 import { getRemoteBlob, putRemoteBlob, SyncNetworkError } from "./client";
 import type { SyncConfig } from "./config";
 import { blobIdFromPassphrase, CryptoError, decryptState, encryptState } from "./crypto";
@@ -9,7 +8,7 @@ export type SyncAction = "pulled" | "pushed" | "unchanged" | "seeded";
 
 export type SyncSuccess = {
   ok: true;
-  state: AppState;
+  state: StoredState;
   action: SyncAction;
   detail: string;
 };
@@ -22,7 +21,7 @@ export type SyncFailure = {
 export type SyncOutcome = SyncSuccess | SyncFailure;
 
 export async function syncAppState(options: {
-  local: AppState;
+  local: StoredState;
   passphrase: string;
   config: SyncConfig;
   fetchFn?: typeof fetch;
@@ -43,18 +42,18 @@ export async function syncAppState(options: {
   }
 
   if (!remote) {
-    if (stateTimestamp(options.local) === 0 && options.local.tasks.length === 0) {
+    if (!options.local.updatedAt) {
       return {
         ok: true,
         state: options.local,
-        action: "unchanged",
-        detail: "No cloud data yet. Add a task, then Sync now to create the encrypted blob.",
-      };
+        action: 'unchanged',
+        detail: 'No cloud data yet. Edit a task, then Sync now to create the encrypted blob.',
+      }
     }
-    return push(options.local, options.passphrase, blobId, options.config, fetchFn, "seeded");
+    return push(options.local, options.passphrase, blobId, options.config, fetchFn, 'seeded')
   }
 
-  let remoteState: AppState;
+  let remoteState: StoredState;
   try {
     remoteState = await decryptState(remote.ciphertext, options.passphrase);
   } catch (error) {
@@ -89,7 +88,7 @@ export async function syncAppState(options: {
 }
 
 async function push(
-  local: AppState,
+  local: StoredState,
   passphrase: string,
   blobId: string,
   config: SyncConfig,

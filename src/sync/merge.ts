@@ -1,13 +1,12 @@
-import { stateTimestamp } from "../storage";
-import type { AppState } from "../types";
+import { stateTimestamp, type StoredState } from '../storage'
 
 export type MergeDecision = "local" | "remote" | "equal";
 
 /**
- * Whole-document last-write-wins using AppState.updatedAt.
+ * Whole-document last-write-wins using StoredState.updatedAt.
  * Missing timestamps lose to any real write so a fresh device pulls existing cloud data.
  */
-export function decideWinner(local: AppState, remote: AppState): MergeDecision {
+export function decideWinner(local: StoredState, remote: StoredState): MergeDecision {
   const localTs = stateTimestamp(local);
   const remoteTs = stateTimestamp(remote);
   if (remoteTs > localTs) return "remote";

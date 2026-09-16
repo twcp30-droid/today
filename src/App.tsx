@@ -1,12 +1,14 @@
 import { useMemo, useState } from 'react'
 import { MonthCalendar } from './components/MonthCalendar'
 import { SectionCard } from './components/SectionCard'
+import { SyncSettings } from './components/SyncSettings'
 import { TaskSheet } from './components/TaskSheet'
 import { UpcomingList } from './components/UpcomingList'
 import { formatLong, parseISODate, todayISO } from './dates'
 import { useTasks } from './hooks/useTasks'
 import { useTheme } from './hooks/useTheme'
 import { occursOn } from './recurrence'
+import { useSync } from './sync/useSync'
 import { SECTIONS, type SectionId, type Task } from './types'
 
 interface SheetState {
@@ -18,8 +20,10 @@ interface SheetState {
 
 export default function App() {
   const today = todayISO()
-  const { tasks, upsert, remove, toggleComplete } = useTasks()
+  const { tasks, stored, replaceStored, upsert, remove, toggleComplete } = useTasks()
   const { theme, toggleTheme } = useTheme()
+  const sync = useSync(stored, replaceStored)
+  const [syncOpen, setSyncOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState(today)
   const selected = parseISODate(selectedDate)
   const [year, setYear] = useState(selected.getFullYear())
@@ -70,6 +74,13 @@ export default function App() {
               Jump to today
             </button>
           ) : null}
+          <button
+            type="button"
+            className="ghost-btn"
+            onClick={() => setSyncOpen(true)}
+          >
+            {sync.status.syncing ? 'Syncing' : 'Sync'}
+          </button>
           <button
             type="button"
             className="icon-btn"
@@ -126,6 +137,18 @@ export default function App() {
         onClose={() => setSheet((prev) => ({ ...prev, open: false }))}
         onSave={upsert}
         onDelete={remove}
+      />
+
+      <SyncSettings
+        open={syncOpen}
+        status={sync.status}
+        passphrase={sync.passphrase}
+        onClose={() => setSyncOpen(false)}
+        onSavePassphrase={(phrase) => sync.persistPassphrase(phrase)}
+        onSyncNow={() => {
+          void sync.runSync('manual')
+        }}
+        onForget={() => sync.forget()}
       />
     </div>
   )

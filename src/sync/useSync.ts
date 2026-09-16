@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import type { AppState } from "../types";
+import { useCallback, useEffect, useRef, useState } from 'react'
+import type { StoredState } from '../storage'
 import { readSyncConfig } from "./config";
 import { syncAppState } from "./engine";
 import {
@@ -20,8 +20,8 @@ export type SyncStatus = {
 };
 
 export function useSync(
-  state: AppState,
-  setState: (updater: AppState | ((current: AppState) => AppState)) => void,
+  state: StoredState,
+  setState: (updater: StoredState | ((current: StoredState) => StoredState)) => void,
 ) {
   const configured = readSyncConfig() !== null;
   const [passphrase, setPassphraseValue] = useState(() => loadPassphrase());
@@ -32,9 +32,15 @@ export function useSync(
   const skipAutoPush = useRef(true);
   const inFlight = useRef(false);
   const stateRef = useRef(state);
-  stateRef.current = state;
   const passphraseRef = useRef(passphrase);
-  passphraseRef.current = passphrase;
+
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
+  useEffect(() => {
+    passphraseRef.current = passphrase;
+  }, [passphrase]);
 
   const persistPassphrase = useCallback((value: string) => {
     setPassphraseValue(value);

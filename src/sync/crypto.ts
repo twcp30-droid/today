@@ -1,5 +1,4 @@
-import { parseImportedState } from "../storage";
-import type { AppState } from "../types";
+import { parseStoredState, type StoredState } from '../storage'
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -33,7 +32,7 @@ export async function blobIdFromPassphrase(passphrase: string): Promise<string> 
 }
 
 export async function encryptState(
-  state: AppState,
+  state: StoredState,
   passphrase: string,
   options?: { iterations?: number },
 ): Promise<string> {
@@ -60,7 +59,7 @@ export async function decryptState(
   envelope: string,
   passphrase: string,
   options?: { iterations?: number },
-): Promise<AppState> {
+): Promise<StoredState> {
   const normalized = normalizePassphrase(passphrase);
   if (!normalized) throw new CryptoError("Enter a passphrase");
 
@@ -89,7 +88,7 @@ export async function decryptState(
   }
 
   try {
-    return parseImportedState(decoder.decode(plaintext));
+    return parseStoredState(decoder.decode(plaintext));
   } catch {
     throw new CryptoError("Decrypted data was not a valid Today backup");
   }
@@ -97,7 +96,7 @@ export async function decryptState(
 
 async function deriveKey(
   passphrase: string,
-  salt: Uint8Array,
+  salt: BufferSource,
   iterations: number,
 ): Promise<CryptoKey> {
   const material = await crypto.subtle.importKey(

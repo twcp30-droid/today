@@ -1,144 +1,160 @@
-import { useEffect, useState } from "react";
-import { normalizePassphrase } from "../sync/crypto";
-import type { SyncStatus } from "../sync/useSync";
+import { useEffect, useId, useRef, useState } from 'react'
+import { normalizePassphrase } from '../sync/crypto'
+import type { SyncStatus } from '../sync/useSync'
 
 export function SyncSettings(props: {
-  status: SyncStatus;
-  passphrase: string;
-  onClose: () => void;
-  onSavePassphrase: (passphrase: string) => void;
-  onSyncNow: () => void;
-  onForget: () => void;
+  open: boolean
+  status: SyncStatus
+  passphrase: string
+  onClose: () => void
+  onSavePassphrase: (passphrase: string) => void
+  onSyncNow: () => void
+  onForget: () => void
 }) {
-  const [phrase, setPhrase] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [formError, setFormError] = useState<string | null>(null);
-  const saved = Boolean(props.passphrase);
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const titleId = useId()
+  const [phrase, setPhrase] = useState('')
+  const [confirm, setConfirm] = useState('')
+  const [formError, setFormError] = useState<string | null>(null)
+  const saved = Boolean(props.passphrase)
 
   useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") props.onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [props]);
+    const dialog = dialogRef.current
+    if (!dialog) return
+    if (props.open && !dialog.open) dialog.showModal()
+    if (!props.open && dialog.open) dialog.close()
+  }, [props.open])
 
   function savePhrase() {
-    const normalized = normalizePassphrase(phrase);
+    const normalized = normalizePassphrase(phrase)
     if (normalized.length < 8) {
-      setFormError("Use at least 8 characters. A long random phrase is much safer.");
-      return;
+      setFormError('Use at least 8 characters. A long random phrase is much safer.')
+      return
     }
     if (phrase !== confirm) {
-      setFormError("Passphrases do not match.");
-      return;
+      setFormError('Passphrases do not match.')
+      return
     }
-    setFormError(null);
-    props.onSavePassphrase(normalized);
-    setPhrase("");
-    setConfirm("");
+    setFormError(null)
+    props.onSavePassphrase(normalized)
+    setPhrase('')
+    setConfirm('')
   }
 
   return (
-    <div className="overlay sync-overlay" role="presentation" onClick={props.onClose}>
-      <section
-        className="modal sync-modal"
-        role="dialog"
-        aria-labelledby="sync-title"
-        onClick={(event) => event.stopPropagation()}
+    <dialog
+      ref={dialogRef}
+      className="sheet"
+      aria-labelledby={titleId}
+      onCancel={(event) => {
+        event.preventDefault()
+        props.onClose()
+      }}
+      onClick={(event) => {
+        if (event.target === dialogRef.current) props.onClose()
+      }}
+    >
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          savePhrase()
+        }}
       >
-        <h2 id="sync-title">Sync</h2>
-        <p className="blurb">
-          Same passphrase on your phone and work PC. Tasks are encrypted in the browser with
-          AES-GCM, then stored as an opaque blob. This device still keeps a localStorage cache.
+        <h2 id={titleId}>Sync</h2>
+        <p className="upcoming-hint">
+          Same passphrase on your phone and work PC. Tasks are encrypted in the browser with AES-GCM,
+          then stored as an opaque blob. This device still keeps a localStorage cache.
         </p>
-        <p className="hint">
-          Merge is last-write-wins for the whole planner (by <code>updatedAt</code>). Sync the
-          device that already has tasks first, then the empty one.
+        <p className="upcoming-hint">
+          Merge is last-write-wins for the whole planner (by updatedAt). Sync the device that already
+          has tasks first, then the empty one.
         </p>
 
         {props.status.configured ? (
           <p className="sync-banner ok">Supabase is configured on this build.</p>
         ) : (
           <p className="sync-banner warn">
-            Add <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code>, then
-            rebuild. Until then, Sync now does nothing. See the README.
+            Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY, then rebuild. Until then, Sync now does
+            nothing. See the README.
           </p>
         )}
 
         {saved ? (
-          <p className="hint">
+          <p className="upcoming-hint">
             A passphrase is saved on this device. Enter a new one below to replace it.
           </p>
         ) : (
-          <p className="hint">Set the passphrase before the first sync.</p>
+          <p className="upcoming-hint">Set the passphrase before the first sync.</p>
         )}
 
-        <label htmlFor="sync-passphrase">Passphrase</label>
-        <input
-          id="sync-passphrase"
-          type="password"
-          autoComplete="new-password"
-          spellCheck={false}
-          value={phrase}
-          onChange={(event) => setPhrase(event.target.value)}
-          placeholder={saved ? "••••••••" : "Long phrase you will reuse"}
-        />
+        <label>
+          Passphrase
+          <input
+            type="password"
+            autoComplete="new-password"
+            spellCheck={false}
+            value={phrase}
+            onChange={(event) => setPhrase(event.target.value)}
+            placeholder={saved ? '••••••••' : 'Long phrase you will reuse'}
+          />
+        </label>
 
-        <label htmlFor="sync-passphrase-confirm">Confirm</label>
-        <input
-          id="sync-passphrase-confirm"
-          type="password"
-          autoComplete="new-password"
-          spellCheck={false}
-          value={confirm}
-          onChange={(event) => setConfirm(event.target.value)}
-        />
+        <label>
+          Confirm
+          <input
+            type="password"
+            autoComplete="new-password"
+            spellCheck={false}
+            value={confirm}
+            onChange={(event) => setConfirm(event.target.value)}
+          />
+        </label>
 
         {formError ? <p className="sync-error">{formError}</p> : null}
 
-        <div className="modal-actions wrap">
-          <button className="primary" onClick={savePhrase}>
+        <div className="sheet-actions wrap">
+          <button type="submit" className="primary">
             Save passphrase
           </button>
           <button
-            className="ghost"
+            type="button"
+            className="ghost-btn"
             disabled={props.status.syncing}
             onClick={() => props.onSyncNow()}
           >
-            {props.status.syncing ? "Syncing…" : "Sync now"}
+            {props.status.syncing ? 'Syncing…' : 'Sync now'}
           </button>
         </div>
 
-        <div className="sync-status-block" aria-live="polite">
-          <h3>Status</h3>
-          {props.status.syncing ? <p>Syncing…</p> : null}
+        <div aria-live="polite">
+          <p className="mit-label">Status</p>
+          {props.status.syncing ? <p className="upcoming-hint">Syncing…</p> : null}
           {props.status.error ? <p className="sync-error">{props.status.error}</p> : null}
           {props.status.detail && !props.status.error ? (
-            <p className="hint">{props.status.detail}</p>
+            <p className="upcoming-hint">{props.status.detail}</p>
           ) : null}
-          <p className="progress">
-            Last synced: {props.status.lastSynced ? formatStamp(props.status.lastSynced) : "never"}
+          <p className="upcoming-hint">
+            Last synced: {props.status.lastSynced ? formatStamp(props.status.lastSynced) : 'never'}
           </p>
         </div>
 
-        <div className="danger-row wrap">
+        <div className="sheet-actions wrap">
           {saved ? (
-            <button className="text-btn danger" onClick={props.onForget}>
+            <button type="button" className="danger" onClick={props.onForget}>
               Forget passphrase on this device
             </button>
           ) : null}
-          <button className="text-btn" onClick={props.onClose}>
+          <button type="button" className="ghost-btn" onClick={props.onClose}>
             Close
           </button>
         </div>
-      </section>
-    </div>
-  );
+      </form>
+    </dialog>
+  )
 }
 
 function formatStamp(iso: string): string {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return iso;
-  return date.toLocaleString();
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) return iso
+  return date.toLocaleString()
 }

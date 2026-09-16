@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react'
-import { loadTasks, saveTasks } from '../storage'
+import { loadState, saveState, touchState, type StoredState } from '../storage'
 import type { Task } from '../types'
 
 export function useTasks() {
-  const [tasks, setTasks] = useState<Task[]>(() => loadTasks())
+  const [state, setState] = useState<StoredState>(() => loadState())
 
   useEffect(() => {
-    saveTasks(tasks)
-  }, [tasks])
+    saveState(state)
+  }, [state])
+
+  function mutate(updater: (tasks: Task[]) => Task[]) {
+    setState((prev) => touchState({ ...prev, tasks: updater(prev.tasks) }))
+  }
 
   function upsert(task: Task) {
-    setTasks((prev) => {
+    mutate((prev) => {
       const exists = prev.some((item) => item.id === task.id)
       let next = exists ? prev.map((item) => (item.id === task.id ? task : item)) : [...prev, task]
       if (task.isMit) {
@@ -23,11 +27,11 @@ export function useTasks() {
   }
 
   function remove(id: string) {
-    setTasks((prev) => prev.filter((item) => item.id !== id))
+    mutate((prev) => prev.filter((item) => item.id !== id))
   }
 
   function toggleComplete(id: string, date: string) {
-    setTasks((prev) =>
+    mutate((prev) =>
       prev.map((item) => {
         if (item.id !== id) return item
         const done = item.completedDates.includes(date)
@@ -41,5 +45,12 @@ export function useTasks() {
     )
   }
 
-  return { tasks, upsert, remove, toggleComplete }
+  return {
+    tasks: state.tasks,
+    stored: state,
+    replaceStored: setState,
+    upsert,
+    remove,
+    toggleComplete,
+  }
 }
