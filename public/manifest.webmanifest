@@ -1,0 +1,32 @@
+{
+  "name": "Today",
+  "short_name": "Today",
+  "description": "Tim's daily task tracker for Systems, SCADA, and Me.",
+  "id": "/today/",
+  "start_url": "/today/",
+  "scope": "/today/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#efe8dc",
+  "theme_color": "#0f5a52",
+  "icons": [
+    {
+      "src": "/today/pwa-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/today/pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/today/pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
