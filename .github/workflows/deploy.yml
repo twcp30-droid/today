@@ -1,4 +1,6 @@
-# Simple workflow for deploying static content to GitHub Pages
+# Deploy the Vite build to GitHub Pages on every push to main.
+# Primary publish path: the gh-pages branch (works with contents:write).
+# Best-effort: official Actions Pages deploy if the repo already has Pages enabled.
 name: Deploy static content to Pages
 
 on:
@@ -16,10 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build-and-publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,20 +38,38 @@ jobs:
           grep -q '/today/' dist/index.html
           cp dist/index.html dist/404.html
           touch dist/.nojekyll
-      - name: Enable GitHub Pages
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh api --method POST /repos/${{ github.repository }}/pages -f build_type=workflow || true
-          gh api --method PUT /repos/${{ github.repository }}/pages -f build_type=workflow || true
+      - name: Publish to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
+          clean: true
+          force: true
+
+  pages-actions:
+    needs: build-and-publish
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
       - name: Setup Pages
+        continue-on-error: true
         uses: actions/configure-pages@v5
         with:
           enablement: true
       - name: Upload artifact
+        continue-on-error: true
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: .
       - name: Deploy to GitHub Pages
+        continue-on-error: true
         id: deployment
         uses: actions/deploy-pages@v4
