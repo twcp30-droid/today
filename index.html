@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="Today — Tim's mobile task tracker for Systems, SCADA, and Me." />
+    <meta name="theme-color" content="#efe8dc" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Today" />
+    <title>Today</title>
+    <link rel="icon" type="image/png" href="/today/favicon.png" />
+    <link rel="apple-touch-icon" href="/today/apple-touch-icon.png" />
+    <link rel="manifest" href="/today/manifest.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      try {
+        var stored = localStorage.getItem('today-theme')
+        var dark =
+          stored === 'dark' ||
+          (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+        document.querySelector('meta[name="theme-color"]')?.setAttribute(
+          'content',
+          dark ? '#12100e' : '#efe8dc',
+        )
+      } catch (e) {}
+    </script>
+    <script type="module" crossorigin src="/today/assets/index-B0F2y0lg.js"></script>
+    <link rel="stylesheet" crossorigin href="/today/assets/index-Df-ZOOYy.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
