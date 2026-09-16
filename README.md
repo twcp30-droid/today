@@ -54,6 +54,7 @@ Free tier only. No paid plans.
 
 1. Create a project at [supabase.com](https://supabase.com) (Free).
 2. In the SQL editor, paste and run [`supabase/migrations/001_today_blobs.sql`](supabase/migrations/001_today_blobs.sql).
+   If you already ran an older `001` and Sync fails with `column reference "id" is ambiguous`, run [`supabase/migrations/002_fix_blob_rpc_ambiguity.sql`](supabase/migrations/002_fix_blob_rpc_ambiguity.sql) instead. New installs only need `001`.
 3. Project Settings → API: copy **Project URL** and the **anon public** key. Leave `service_role` on the server.
 4. Add GitHub Actions repository secrets:
    - `VITE_SUPABASE_URL`
