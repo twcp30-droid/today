@@ -26,4 +26,13 @@ Preview is at http://localhost:4173/today/.
 
 ## GitHub Pages
 
-Pushes to `main` build `dist/` and deploy with GitHub Actions. The site is a PWA (manifest, icons, theme, service worker) and works under the `/today/` base path.
+Pushes to `main` run GitHub Actions: `npm run build`, then publish `dist/` to the `gh-pages` branch. Assets are built with `base: '/today/'`.
+
+If https://twcp30-droid.github.io/today/ 404s, enable Pages once (repo admin):
+
+1. Open **Settings → Pages**
+2. **Build and deployment → Source:** Deploy from a branch
+3. Branch **gh-pages**, folder **/ (root)**
+4. Save
+
+No paid hosting and no secrets are required.
