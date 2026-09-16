@@ -491,15 +491,15 @@ button {
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(6, 8, 12, 0.72);
+  background: rgba(6, 8, 12, 0.78);
   display: grid;
   place-items: center;
   padding: 16px;
-  z-index: 20;
+  z-index: 40;
 }
 
 .sync-overlay {
-  z-index: 25;
+  z-index: 45;
   align-items: start;
   padding: 12px;
   padding-top: max(12px, env(safe-area-inset-top));
@@ -601,7 +601,7 @@ textarea {
   border: 1px solid var(--line-strong);
   border-radius: 999px;
   padding: 10px 16px;
-  z-index: 30;
+  z-index: 60;
 }
 
 .sync-chip {
@@ -712,6 +712,10 @@ textarea {
     padding: 6px;
     z-index: 10;
     backdrop-filter: blur(12px);
+  }
+
+  .modal-open .footer-nav {
+    display: none;
   }
 
   .footer-nav button {

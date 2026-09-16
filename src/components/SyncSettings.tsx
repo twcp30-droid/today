@@ -78,7 +78,7 @@ export function SyncSettings(props: {
         <input
           id="sync-passphrase"
           type="password"
-          autoComplete="off"
+          autoComplete="new-password"
           spellCheck={false}
           value={phrase}
           onChange={(event) => setPhrase(event.target.value)}
@@ -89,7 +89,7 @@ export function SyncSettings(props: {
         <input
           id="sync-passphrase-confirm"
           type="password"
-          autoComplete="off"
+          autoComplete="new-password"
           spellCheck={false}
           value={confirm}
           onChange={(event) => setConfirm(event.target.value)}

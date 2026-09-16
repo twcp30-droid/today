@@ -126,7 +126,7 @@ export default function App() {
   }
 
   return (
-    <div className="app">
+    <div className={`app${syncOpen || modal || !state.onboarded ? " modal-open" : ""}`}>
       <header className="topbar">
         <div className="brand">
           <div className="logo" aria-hidden="true">
