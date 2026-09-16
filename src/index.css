@@ -298,7 +298,7 @@ button {
 
 .task {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) max-content;
   gap: 8px;
   align-items: start;
   padding: 10px;
@@ -334,6 +334,7 @@ button {
   margin: 0;
   font-weight: 600;
   line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .meta {
@@ -358,7 +359,14 @@ button {
 
 .task-actions {
   display: flex;
+  flex-wrap: nowrap;
   gap: 2px;
+}
+
+.task .icon-btn {
+  width: 32px;
+  min-height: 32px;
+  font-size: 12px;
 }
 
 .star[aria-pressed="true"] {
@@ -610,6 +618,10 @@ textarea {
   .day {
     min-height: 64px;
     padding: 6px;
+  }
+
+  .view-toggle {
+    display: none;
   }
 
   .app {
