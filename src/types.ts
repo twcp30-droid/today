@@ -32,6 +32,8 @@ export interface AppState {
   /** Per-day MIT task ids, newest last. */
   mits: Record<string, string[]>;
   onboarded: boolean;
+  /** Last local mutation time. Used for whole-document last-write-wins sync. */
+  updatedAt?: string;
 }
 
 export type ViewMode = "today" | "month";

@@ -31,6 +31,7 @@ describe("storage round-trip", () => {
     state.completions["t1::2026-09-16"] = "2026-09-16T15:00:00.000Z";
     state.mits["2026-09-16"] = ["t1"];
     state.skipped["t1::2026-09-17"] = true;
+    state.updatedAt = "2026-09-16T15:00:00.000Z";
 
     saveState(state, mem);
     expect(mem.getItem(STORAGE_KEY)).toContain("Walkdown");

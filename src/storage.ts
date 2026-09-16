@@ -118,6 +118,11 @@ function migrate(raw: unknown): AppState {
       )
     : {};
 
+  const updatedAt =
+    typeof raw.updatedAt === "string" && !Number.isNaN(Date.parse(raw.updatedAt))
+      ? raw.updatedAt
+      : undefined;
+
   return {
     version: 1,
     tasks,
@@ -125,7 +130,18 @@ function migrate(raw: unknown): AppState {
     skipped,
     mits,
     onboarded: Boolean(raw.onboarded),
+    updatedAt,
   };
+}
+
+export function touchState(state: AppState, now = new Date()): AppState {
+  return { ...state, updatedAt: now.toISOString() };
+}
+
+export function stateTimestamp(state: AppState): number {
+  if (!state.updatedAt) return 0;
+  const value = Date.parse(state.updatedAt);
+  return Number.isNaN(value) ? 0 : value;
 }
 
 function isValidTask(value: unknown): value is Task {

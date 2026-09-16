@@ -69,6 +69,19 @@ describe("store operations", () => {
     expect(state.tasks).toHaveLength(0);
     expect(state.completions).toEqual({});
     expect(state.mits["2026-09-16"]).toEqual([]);
+    expect(state.updatedAt).toBeTruthy();
+  });
+
+  it("stamps updatedAt so sync can last-write-wins", () => {
+    const before = emptyState();
+    expect(before.updatedAt).toBeUndefined();
+    const after = addTask(before, {
+      title: "Stamp me",
+      area: "me",
+      startDate: "2026-09-16",
+    });
+    expect(after.updatedAt).toBeTruthy();
+    expect(Date.parse(after.updatedAt!)).toBeGreaterThan(0);
   });
 });
 

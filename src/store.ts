@@ -9,6 +9,7 @@ import {
   occurrenceSkipped,
   parseImportedState,
   saveState,
+  touchState,
 } from "./storage";
 import type { AppState, Area, Recurrence, Task } from "./types";
 
@@ -23,7 +24,7 @@ export function toggleComplete(state: AppState, taskId: string, date: string, no
   const completions = { ...state.completions };
   if (completions[key]) delete completions[key];
   else completions[key] = now.toISOString();
-  return { ...state, completions };
+  return touchState({ ...state, completions }, now);
 }
 
 export function toggleMit(state: AppState, taskId: string, date: string): AppState {
@@ -31,7 +32,7 @@ export function toggleMit(state: AppState, taskId: string, date: string): AppSta
   const next = current.includes(taskId)
     ? current.filter((id) => id !== taskId)
     : [...current, taskId];
-  return { ...state, mits: { ...state.mits, [date]: next } };
+  return touchState({ ...state, mits: { ...state.mits, [date]: next } });
 }
 
 export function addTask(
@@ -46,16 +47,16 @@ export function addTask(
   },
 ): AppState {
   const task = newTask(input);
-  const next: AppState = { ...state, tasks: [...state.tasks, task] };
+  const next: AppState = touchState({ ...state, tasks: [...state.tasks, task] });
   if (input.mit) return toggleMit(next, task.id, input.startDate);
   return next;
 }
 
 export function updateTask(state: AppState, taskId: string, patch: Partial<Task>): AppState {
-  return {
+  return touchState({
     ...state,
     tasks: state.tasks.map((task) => (task.id === taskId ? { ...task, ...patch, id: task.id } : task)),
-  };
+  });
 }
 
 export function skipOccurrence(state: AppState, taskId: string, date: string): AppState {
@@ -70,7 +71,7 @@ export function skipOccurrence(state: AppState, taskId: string, date: string): A
   delete completions[key];
   const mits = { ...state.mits };
   mits[date] = (mits[date] ?? []).filter((id) => id !== taskId);
-  return { ...state, skipped, completions, mits };
+  return touchState({ ...state, skipped, completions, mits });
 }
 
 export function deleteSeries(state: AppState, taskId: string): AppState {
@@ -84,13 +85,13 @@ export function deleteSeries(state: AppState, taskId: string): AppState {
   const mits = Object.fromEntries(
     Object.entries(state.mits).map(([date, ids]) => [date, ids.filter((id) => id !== taskId)]),
   );
-  return {
+  return touchState({
     ...state,
     tasks: state.tasks.filter((task) => task.id !== taskId),
     completions,
     skipped,
     mits,
-  };
+  });
 }
 
 export function moveOccurrence(
@@ -117,9 +118,17 @@ export function moveOccurrence(
     area: task.area,
     startDate: toDate,
   });
-  next = { ...next, tasks: [...next.tasks, oneShot] };
+  next = touchState({ ...next, tasks: [...next.tasks, oneShot] });
   if (isMit(state, taskId, fromDate)) next = toggleMit(next, oneShot.id, toDate);
   return next;
 }
 
-export { isMit, loadState, occurrenceCompleted, parseImportedState, saveState, emptyState };
+export {
+  isMit,
+  loadState,
+  occurrenceCompleted,
+  parseImportedState,
+  saveState,
+  emptyState,
+  touchState,
+};

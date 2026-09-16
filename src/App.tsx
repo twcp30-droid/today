@@ -13,12 +13,15 @@ import {
   parseImportedState,
   saveState,
   skipOccurrence,
+  touchState,
   tasksForDate,
   toggleComplete,
   toggleMit,
   updateTask,
 } from "./store";
 import { exportState } from "./storage";
+import { SyncSettings } from "./components/SyncSettings";
+import { useSync } from "./sync/useSync";
 import { AREAS, type AppState, type Area, type Recurrence, type Task, type ViewMode } from "./types";
 
 type ModalState =
@@ -33,9 +36,11 @@ export default function App() {
   const [monthDate, setMonthDate] = useState(startOfMonth(todayISO()));
   const [modal, setModal] = useState<ModalState>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [syncOpen, setSyncOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const today = todayISO();
+  const sync = useSync(state, setState);
 
   useEffect(() => {
     saveState(state);
@@ -100,7 +105,7 @@ export default function App() {
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        const next = parseImportedState(String(reader.result));
+        const next = touchState(parseImportedState(String(reader.result)));
         setState(next);
         setToast("Backup restored");
       } catch {
@@ -132,7 +137,7 @@ export default function App() {
           </div>
           <div>
             <h1 className="wordmark">TODAY</h1>
-            <p className="tag">SYSTEMS · SCADA · ME · LOCAL</p>
+            <p className="tag">SYSTEMS · SCADA · ME · {sync.status.passphraseSaved ? "SYNC" : "LOCAL"}</p>
           </div>
         </div>
         <div className="top-actions">
@@ -152,6 +157,15 @@ export default function App() {
               Month
             </button>
           </div>
+          <button
+            className={`chip sync-chip${sync.status.error ? " danger-chip" : ""}`}
+            onClick={() => {
+              setMenuOpen(false);
+              setSyncOpen(true);
+            }}
+          >
+            {sync.status.syncing ? "Syncing" : "Sync"}
+          </button>
           <button className="primary" onClick={() => openCreate("systems")}>
             New task
           </button>
@@ -181,6 +195,14 @@ export default function App() {
                   }}
                 >
                   Import backup
+                </button>
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    setSyncOpen(true);
+                  }}
+                >
+                  Sync settings
                 </button>
                 <button
                   onClick={() => {
@@ -354,6 +376,12 @@ export default function App() {
           Month
         </button>
         <button onClick={() => openCreate("me")}>New</button>
+        <button
+          aria-pressed={syncOpen}
+          onClick={() => setSyncOpen(true)}
+        >
+          Sync
+        </button>
       </nav>
 
       {modal ? (
@@ -392,7 +420,7 @@ export default function App() {
           <section className="onboard" role="dialog" aria-labelledby="guide-title">
             <h2 id="guide-title">Three lanes for one day</h2>
             <p className="blurb">
-              Today keeps Systems, SCADA, and Me on one screen. Pin a few MITs, repeat what should come back, and stay on this device — everything is saved in localStorage.
+              Today keeps Systems, SCADA, and Me on one screen. Pin a few MITs and repeat what should come back. This device caches everything in localStorage. Set a passphrase under Sync to share an encrypted copy with your other devices.
             </p>
             <ul className="blurb">
               {AREAS.map((area) => (
@@ -411,6 +439,25 @@ export default function App() {
             </div>
           </section>
         </div>
+      ) : null}
+
+      {syncOpen ? (
+        <SyncSettings
+          status={sync.status}
+          passphrase={sync.passphrase}
+          onClose={() => setSyncOpen(false)}
+          onSavePassphrase={(phrase) => {
+            sync.persistPassphrase(phrase);
+            setToast("Passphrase saved on this device");
+          }}
+          onSyncNow={() => {
+            void sync.runSync("manual");
+          }}
+          onForget={() => {
+            sync.forget();
+            setToast("Passphrase forgotten on this device");
+          }}
+        />
       ) : null}
 
       {toast ? <div className="toast">{toast}</div> : null}
