@@ -1,4 +1,4 @@
-import { occursOn } from '../recurrence'
+import { appearsOn } from '../recurrence'
 import { SECTION_META, type SectionId, type Task } from '../types'
 import { TaskRow } from './TaskRow'
 
@@ -13,7 +13,7 @@ interface SectionCardProps {
 
 export function SectionCard({ section, date, tasks, onAdd, onToggle, onEdit }: SectionCardProps) {
   const meta = SECTION_META[section]
-  const dayTasks = tasks.filter((task) => occursOn(task, date))
+  const dayTasks = tasks.filter((task) => appearsOn(task, date))
   const mit = dayTasks.find((task) => task.isMit)
   const rest = dayTasks.filter((task) => !task.isMit)
 

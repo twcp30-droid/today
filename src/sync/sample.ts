@@ -12,5 +12,5 @@ export function sampleTask(title: string, updatedAt: string): StoredState {
     completedDates: ['2026-09-16'],
     createdAt: updatedAt,
   }
-  return { version: 1, tasks: [task], updatedAt }
+  return { version: 1, tasks: [task], mostImportantObjective: '', updatedAt }
 }

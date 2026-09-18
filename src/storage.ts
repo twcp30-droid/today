@@ -7,22 +7,24 @@ export const STORAGE_KEY = 'today-tasks-v1'
 export interface StoredState {
   version: 1
   tasks: Task[]
+  /** Standing north-star text. Not a task: no due date or completion. */
+  mostImportantObjective: string
   /** Last user mutation. Used for whole-document last-write-wins sync. */
   updatedAt?: string
 }
 
 export function emptyState(): StoredState {
-  return { version: 1, tasks: [] }
+  return { version: 1, tasks: [], mostImportantObjective: '' }
 }
 
 export function loadState(): StoredState {
   const raw = localStorage.getItem(STORAGE_KEY)
-  if (raw === null) return { version: 1, tasks: buildSeed(todayISO()) }
+  if (raw === null) return { version: 1, tasks: buildSeed(todayISO()), mostImportantObjective: '' }
 
   try {
     return parseStoredState(raw)
   } catch {
-    return { version: 1, tasks: buildSeed(todayISO()) }
+    return { version: 1, tasks: buildSeed(todayISO()), mostImportantObjective: '' }
   }
 }
 
@@ -30,6 +32,7 @@ export function saveState(state: StoredState): void {
   const payload: StoredState = {
     version: 1,
     tasks: state.tasks,
+    mostImportantObjective: state.mostImportantObjective ?? '',
     updatedAt: state.updatedAt,
   }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
@@ -61,11 +64,13 @@ export function parseStoredState(raw: string): StoredState {
   }
   const record = parsed as Record<string, unknown>
   const tasks = Array.isArray(record.tasks) ? record.tasks.filter(isValidTask) : []
+  const mostImportantObjective =
+    typeof record.mostImportantObjective === 'string' ? record.mostImportantObjective : ''
   const updatedAt =
     typeof record.updatedAt === 'string' && !Number.isNaN(Date.parse(record.updatedAt))
       ? record.updatedAt
       : undefined
-  return { version: 1, tasks, updatedAt }
+  return { version: 1, tasks, mostImportantObjective, updatedAt }
 }
 
 function isValidTask(value: unknown): value is Task {
