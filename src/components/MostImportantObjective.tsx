@@ -13,10 +13,6 @@ export function MostImportantObjective({ value, onSave }: MostImportantObjective
   const [draft, setDraft] = useState(value)
 
   useEffect(() => {
-    if (!editing) setDraft(value)
-  }, [editing, value])
-
-  useEffect(() => {
     if (editing) inputRef.current?.focus()
   }, [editing])
 
