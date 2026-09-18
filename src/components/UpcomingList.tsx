@@ -1,5 +1,5 @@
 import { formatShort } from '../dates'
-import { nextOccurrence, occursOn, recurrenceLabel } from '../recurrence'
+import { appearsOn, nextOccurrence, recurrenceLabel } from '../recurrence'
 import { SECTION_META, type Task } from '../types'
 
 interface UpcomingListProps {
@@ -10,7 +10,7 @@ interface UpcomingListProps {
 
 export function UpcomingList({ tasks, date, onEdit }: UpcomingListProps) {
   const items = tasks
-    .filter((task) => !occursOn(task, date))
+    .filter((task) => !appearsOn(task, date))
     .map((task) => {
       const next = nextOccurrence(task, date)
       return next ? { task, next } : null

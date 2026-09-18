@@ -1,5 +1,5 @@
 import { daysInMonth, toISODate, weekday, monthLabel } from '../dates'
-import { occursOn } from '../recurrence'
+import { isOpenOn } from '../recurrence'
 import type { Task } from '../types'
 
 const DOW = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
@@ -55,7 +55,7 @@ export function MonthCalendar({
           if (!cell) return <span key={`empty-${index}`} className="cal-empty" />
           const isToday = cell.iso === todayDate
           const isSelected = cell.iso === selectedDate
-          const hasOpen = tasks.some((task) => occursOn(task, cell.iso) && !task.completedDates.includes(cell.iso))
+          const hasOpen = tasks.some((task) => isOpenOn(task, cell.iso))
           return (
             <button
               key={cell.iso}

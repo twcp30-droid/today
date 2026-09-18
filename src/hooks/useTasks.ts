@@ -13,6 +13,14 @@ export function useTasks() {
     setState((prev) => touchState({ ...prev, tasks: updater(prev.tasks) }))
   }
 
+  function setMostImportantObjective(value: string) {
+    setState((prev) => {
+      const mostImportantObjective = value.trim()
+      if (prev.mostImportantObjective === mostImportantObjective) return prev
+      return touchState({ ...prev, mostImportantObjective })
+    })
+  }
+
   function upsert(task: Task) {
     mutate((prev) => {
       const exists = prev.some((item) => item.id === task.id)
@@ -47,10 +55,12 @@ export function useTasks() {
 
   return {
     tasks: state.tasks,
+    mostImportantObjective: state.mostImportantObjective ?? '',
     stored: state,
     replaceStored: setState,
     upsert,
     remove,
     toggleComplete,
+    setMostImportantObjective,
   }
 }

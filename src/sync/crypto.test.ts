@@ -31,6 +31,19 @@ describe('passphrase crypto', () => {
     expect(roundTrip.tasks[0].completedDates).toEqual(['2026-09-16'])
   })
 
+  it('round-trips the standing objective inside the encrypted blob', async () => {
+    const state = {
+      ...sampleTask('SECRET_SCADA_WALKDOWN', '2026-09-16T12:00:00.000Z'),
+      mostImportantObjective: 'SECRET_NORTH_STAR',
+    }
+    const envelope = await encryptState(state, passphrase)
+    expect(envelope).not.toContain('SECRET_NORTH_STAR')
+
+    const roundTrip = await decryptState(envelope, passphrase)
+    expect(roundTrip.mostImportantObjective).toBe('SECRET_NORTH_STAR')
+    expect(roundTrip.tasks[0].title).toBe('SECRET_SCADA_WALKDOWN')
+  })
+
   it('rejects the wrong passphrase', async () => {
     const envelope = await encryptState(emptyState(), passphrase)
     await expect(decryptState(envelope, 'wrong passphrase')).rejects.toThrow(/Wrong passphrase/)

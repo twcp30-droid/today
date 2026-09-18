@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { MonthCalendar } from './components/MonthCalendar'
+import { MostImportantObjective } from './components/MostImportantObjective'
 import { SectionCard } from './components/SectionCard'
 import { SyncSettings } from './components/SyncSettings'
 import { TaskSheet } from './components/TaskSheet'
@@ -7,7 +8,7 @@ import { UpcomingList } from './components/UpcomingList'
 import { formatLong, parseISODate, todayISO } from './dates'
 import { useTasks } from './hooks/useTasks'
 import { useTheme } from './hooks/useTheme'
-import { occursOn } from './recurrence'
+import { appearsOn } from './recurrence'
 import { useSync } from './sync/useSync'
 import { SECTIONS, type SectionId, type Task } from './types'
 
@@ -20,7 +21,16 @@ interface SheetState {
 
 export default function App() {
   const today = todayISO()
-  const { tasks, stored, replaceStored, upsert, remove, toggleComplete } = useTasks()
+  const {
+    tasks,
+    mostImportantObjective,
+    stored,
+    replaceStored,
+    upsert,
+    remove,
+    toggleComplete,
+    setMostImportantObjective,
+  } = useTasks()
   const { theme, toggleTheme } = useTheme()
   const sync = useSync(stored, replaceStored)
   const [syncOpen, setSyncOpen] = useState(false)
@@ -42,7 +52,7 @@ export default function App() {
   }
 
   const progress = useMemo(() => {
-    const due = tasks.filter((task) => occursOn(task, selectedDate))
+    const due = tasks.filter((task) => appearsOn(task, selectedDate))
     const done = due.filter((task) => task.completedDates.includes(selectedDate))
     return { due: due.length, done: done.length }
   }, [tasks, selectedDate])
@@ -91,6 +101,8 @@ export default function App() {
           </button>
         </div>
       </header>
+
+      <MostImportantObjective value={mostImportantObjective} onSave={setMostImportantObjective} />
 
       <MonthCalendar
         year={year}

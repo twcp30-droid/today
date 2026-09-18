@@ -1,4 +1,5 @@
-import { isCompletedOn, occursOn, recurrenceLabel } from '../recurrence'
+import { formatShort } from '../dates'
+import { isCompletedOn, recurrenceLabel, rolledFrom } from '../recurrence'
 import type { Task } from '../types'
 
 interface TaskRowProps {
@@ -11,7 +12,7 @@ interface TaskRowProps {
 
 export function TaskRow({ task, date, featured = false, onToggle, onEdit }: TaskRowProps) {
   const done = isCompletedOn(task, date)
-  const dueToday = occursOn(task, date)
+  const origin = rolledFrom(task, date)
 
   return (
     <article className={`task ${featured ? 'is-mit' : ''} ${done ? 'is-done' : ''}`}>
@@ -28,7 +29,7 @@ export function TaskRow({ task, date, featured = false, onToggle, onEdit }: Task
         <p className="task-title">{task.title}</p>
         <p className="task-meta">
           {recurrenceLabel(task.recurrence)}
-          {!dueToday ? ' · not this day' : ''}
+          {origin ? ` · rolled from ${formatShort(origin)}` : ''}
         </p>
       </div>
       <button type="button" className="ghost-btn" onClick={onEdit} aria-label={`Edit ${task.title}`}>
