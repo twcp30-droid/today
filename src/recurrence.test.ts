@@ -5,8 +5,10 @@ function makeTask(overrides: Partial<Task> & Pick<Task, 'dueDate' | 'recurrence'
   return {
     id: 't1',
     title: 'Task',
+    description: '',
     section: 'systems',
     isMit: false,
+    priority: 3,
     completedDates: [],
     createdAt: '2026-09-01T00:00:00.000Z',
     ...overrides,

@@ -56,14 +56,20 @@ body {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
 .app {
   width: min(460px, 100%);
   margin: 0 auto;
-  padding: 20px 16px 48px;
+  padding: 20px 16px 88px;
+}
+
+.app.is-tables {
+  width: min(960px, 100%);
 }
 
 .top {
@@ -94,7 +100,9 @@ h1 {
 .upcoming-hint,
 .section-head p,
 .empty,
-.task-meta {
+.task-meta,
+.task-desc,
+.tables-lede {
   color: var(--muted);
 }
 
@@ -350,8 +358,12 @@ h1 {
   border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
 }
 
-.task.is-done .task-title {
+.task.is-done .task-title-text {
   text-decoration: line-through;
+  color: var(--muted);
+}
+
+.task.is-done .task-desc {
   color: var(--muted);
 }
 
@@ -372,6 +384,46 @@ h1 {
 .task-title {
   margin: 0;
   font-weight: 600;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.task-desc {
+  margin: 2px 0 0;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.prio-dot {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 4px;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  flex: none;
+  background: var(--bg-2);
+  color: var(--ink);
+}
+
+.prio-dot.prio-1,
+.prio-select.prio-1 {
+  background: color-mix(in srgb, var(--danger) 18%, var(--paper));
+  color: var(--danger);
+}
+
+.prio-dot.prio-2,
+.prio-select.prio-2 {
+  background: color-mix(in srgb, var(--scada) 18%, var(--paper));
+  color: var(--scada);
+}
+
+.prio-dot.prio-4,
+.prio-dot.prio-5 {
+  color: var(--muted);
 }
 
 .task-meta,
@@ -453,13 +505,20 @@ h1 {
 .sheet input[type='text'],
 .sheet input[type='date'],
 .sheet input[type='number'],
-.sheet input:not([type='checkbox']) {
+.sheet input:not([type='checkbox']),
+.sheet select,
+.sheet textarea {
   width: 100%;
   border: 1px solid var(--line);
   background: var(--bg);
   color: inherit;
   border-radius: 12px;
   padding: 10px 12px;
+}
+
+.sheet textarea {
+  resize: vertical;
+  min-height: 72px;
 }
 
 .seg {
@@ -537,6 +596,156 @@ h1 {
   margin: 0;
   color: var(--danger);
   font-size: 0.92rem;
+}
+
+.tables-lede {
+  margin: 0 0 14px;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.task-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+}
+
+.task-table th,
+.task-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.task-table th {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.task-table td:first-child,
+.task-table th:first-child {
+  width: 88px;
+}
+
+.task-table td:last-child,
+.task-table th:last-child {
+  width: 72px;
+  padding-right: 0;
+}
+
+.sort-btn {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  font-weight: inherit;
+}
+
+.sort-btn span {
+  color: var(--accent);
+}
+
+.task-table input[type='text'],
+.task-table input[type='date'],
+.task-table select {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: inherit;
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.prio-select {
+  min-width: 64px;
+}
+
+.title-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mit-chip {
+  flex: none;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: 3px 7px;
+}
+
+.table-empty {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.table-actions {
+  white-space: nowrap;
+}
+
+.add-row td {
+  border-bottom: 0;
+  padding-top: 10px;
+}
+
+.add-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.app-nav {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  z-index: 5;
+  width: min(460px, 100%);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--line);
+}
+
+.app.is-tables .app-nav {
+  width: min(960px, 100%);
+}
+
+.app-nav a {
+  display: grid;
+  place-items: center;
+  min-height: 40px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--muted);
+  font-weight: 600;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+
+.app-nav a.is-on {
+  color: var(--on-accent);
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
 @media (max-width: 420px) {

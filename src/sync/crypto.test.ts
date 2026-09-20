@@ -28,6 +28,8 @@ describe('passphrase crypto', () => {
     const roundTrip = await decryptState(envelope, passphrase)
     expect(roundTrip.tasks[0].title).toBe('SECRET_SCADA_WALKDOWN')
     expect(roundTrip.tasks[0].isMit).toBe(true)
+    expect(roundTrip.tasks[0].priority).toBe(2)
+    expect(roundTrip.tasks[0].description).toBe('Keep the historian honest.')
     expect(roundTrip.tasks[0].completedDates).toEqual(['2026-09-16'])
   })
 

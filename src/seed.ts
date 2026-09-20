@@ -1,4 +1,5 @@
 import { addDays, weekday } from './dates'
+import { newTask } from './task'
 import type { Task } from './types'
 
 export function buildSeed(today: string): Task[] {
@@ -7,125 +8,128 @@ export function buildSeed(today: string): Task[] {
   const later = addDays(today, 3)
 
   return [
-    {
+    newTask({
       id: 'seed-sys-mit',
       title: 'Walk the plant: pumps, MCC, backup power',
+      description: 'Look, listen, and note anything that smells hot or sounds off.',
       section: 'systems',
       isMit: true,
+      priority: 1,
       dueDate: today,
       recurrence: { kind: 'weekdays' },
-      completedDates: [],
       createdAt,
-    },
-    {
+    }),
+    newTask({
       id: 'seed-sys-vfd',
       title: 'Check VFD heat and cabinet filters',
+      description: 'Wipe filters if dusty; log cabinet temperature.',
       section: 'systems',
-      isMit: false,
+      priority: 2,
       dueDate: today,
       recurrence: { kind: 'daily' },
-      completedDates: [],
       createdAt,
-    },
-    {
+    }),
+    newTask({
       id: 'seed-sys-gen',
       title: 'Generator unloaded test run',
+      description: 'Ten minutes unloaded. Confirm auto-start after.',
       section: 'systems',
-      isMit: false,
+      priority: 3,
       dueDate: today,
       recurrence: { kind: 'weekly', weekday: otherWeekday },
-      completedDates: [],
       createdAt,
-    },
-    {
+    }),
+    newTask({
       id: 'seed-sys-once',
       title: 'Replace faded MCC bucket labels',
+      description: 'Print new labels for buckets 3, 7, and 11.',
       section: 'systems',
-      isMit: false,
+      priority: 4,
       dueDate: today,
       recurrence: { kind: 'once' },
-      completedDates: [],
       createdAt,
-    },
-    {
+    }),
+    newTask({
       id: 'seed-scada-mit',
       title: 'Triage overnight alarm flood',
+      description: 'Shelve nuisances only after ops agrees.',
       section: 'scada',
       isMit: true,
+      priority: 1,
       dueDate: today,
       recurrence: { kind: 'weekdays' },
-      completedDates: [],
       createdAt,
-    },
-    {
+    }),
+    newTask({
       id: 'seed-scada-hist',
       title: 'Verify historian gap fill',
+      description: 'Check the last 24h for missing tags after the RTU blip.',
       section: 'scada',
-      isMit: false,
+      priority: 2,
       dueDate: today,
       recurrence: { kind: 'weekdays' },
-      completedDates: [],
       createdAt,
-    },
-    {
+    }),
+    newTask({
       id: 'seed-scada-rtu',
       title: 'Backup RTU configs',
+      description: 'Copy to the shared drive and the air-gapped stick.',
       section: 'scada',
-      isMit: false,
+      priority: 3,
       dueDate: today,
       recurrence: { kind: 'every_n', n: 7 },
-      completedDates: [],
       createdAt,
-    },
-    {
+    }),
+    newTask({
       id: 'seed-scada-setpoints',
       title: 'Review setpoint changes with ops',
+      description: 'Walk through anything changed since last week.',
       section: 'scada',
-      isMit: false,
+      priority: 4,
       dueDate: today,
       recurrence: { kind: 'weekly', weekday: otherWeekday },
-      completedDates: [],
       createdAt,
-    },
-    {
+    }),
+    newTask({
       id: 'seed-me-mit',
       title: 'Protect a real lunch break',
+      description: 'Leave the radio. Eat sitting down.',
       section: 'me',
       isMit: true,
+      priority: 1,
       dueDate: today,
       recurrence: { kind: 'weekdays' },
-      completedDates: [],
       createdAt,
-    },
-    {
+    }),
+    newTask({
       id: 'seed-me-walk',
       title: 'Walk 20 minutes',
+      description: 'Loop the pond if the weather holds.',
       section: 'me',
-      isMit: false,
+      priority: 2,
       dueDate: today,
       recurrence: { kind: 'daily' },
-      completedDates: [],
       createdAt,
-    },
-    {
+    }),
+    newTask({
       id: 'seed-me-family',
       title: 'Family check-in text',
+      description: 'One real sentence, not just a thumbs-up.',
       section: 'me',
-      isMit: false,
+      priority: 3,
       dueDate: today,
       recurrence: { kind: 'weekly', weekday: otherWeekday },
-      completedDates: [],
       createdAt,
-    },
-    {
+    }),
+    newTask({
       id: 'seed-me-dentist',
       title: 'Schedule dentist',
+      description: 'Cleaning + the cracked molar follow-up.',
       section: 'me',
-      isMit: false,
+      priority: 5,
       dueDate: later,
       recurrence: { kind: 'once' },
-      completedDates: [],
       createdAt,
-    },
+    }),
   ]
 }
