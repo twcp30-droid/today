@@ -1,6 +1,10 @@
 export const SECTIONS = ['systems', 'scada', 'me'] as const
 export type SectionId = (typeof SECTIONS)[number]
 
+export const PRIORITIES = [1, 2, 3, 4, 5] as const
+export type Priority = (typeof PRIORITIES)[number]
+export const DEFAULT_PRIORITY: Priority = 3
+
 export type Recurrence =
   | { kind: 'once' }
   | { kind: 'daily' }
@@ -13,12 +17,18 @@ export type RecurrenceKind = Recurrence['kind']
 export interface Task {
   id: string
   title: string
+  description: string
   section: SectionId
   isMit: boolean
   dueDate: string
+  priority: Priority
   recurrence: Recurrence
   completedDates: string[]
   createdAt: string
+}
+
+export function isPriority(value: unknown): value is Priority {
+  return typeof value === 'number' && PRIORITIES.includes(value as Priority)
 }
 
 export const SECTION_META: Record<

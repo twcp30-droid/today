@@ -1,7 +1,8 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
 import { weekday } from '../dates'
-import type { Recurrence, RecurrenceKind, SectionId, Task } from '../types'
-import { SECTIONS, SECTION_META, WEEKDAYS } from '../types'
+import { newTask } from '../task'
+import type { Priority, Recurrence, RecurrenceKind, SectionId, Task } from '../types'
+import { DEFAULT_PRIORITY, PRIORITIES, SECTIONS, SECTION_META, WEEKDAYS } from '../types'
 
 interface TaskSheetProps {
   open: boolean
@@ -16,9 +17,11 @@ interface TaskSheetProps {
 
 interface Draft {
   title: string
+  description: string
   section: SectionId
   isMit: boolean
   dueDate: string
+  priority: Priority
   kind: RecurrenceKind
   weekday: number
   everyN: number
@@ -38,9 +41,11 @@ function recurrenceFromDraft(draft: Draft): Recurrence {
 function draftFromTask(task: Task): Draft {
   return {
     title: task.title,
+    description: task.description,
     section: task.section,
     isMit: task.isMit,
     dueDate: task.dueDate,
+    priority: task.priority,
     kind: task.recurrence.kind,
     weekday: task.recurrence.kind === 'weekly' ? task.recurrence.weekday : weekday(task.dueDate),
     everyN: task.recurrence.kind === 'every_n' ? task.recurrence.n : 2,
@@ -64,9 +69,11 @@ export function TaskSheet({
       ? draftFromTask(editing)
       : {
           title: '',
+          description: '',
           section: presetSection,
           isMit: presetMit,
           dueDate: date,
+          priority: DEFAULT_PRIORITY,
           kind: 'once',
           weekday: weekday(date),
           everyN: 2,
@@ -84,16 +91,18 @@ export function TaskSheet({
     event.preventDefault()
     const title = draft.title.trim()
     if (!title) return
-    const task: Task = {
-      id: editing?.id ?? crypto.randomUUID(),
+    const task: Task = newTask({
+      id: editing?.id,
       title,
+      description: draft.description.trim(),
       section: draft.section,
       isMit: draft.isMit,
       dueDate: draft.dueDate,
+      priority: draft.priority,
       recurrence: recurrenceFromDraft(draft),
-      completedDates: editing?.completedDates ?? [],
-      createdAt: editing?.createdAt ?? new Date().toISOString(),
-    }
+      completedDates: editing?.completedDates,
+      createdAt: editing?.createdAt,
+    })
     onSave(task)
     onClose()
   }
@@ -123,6 +132,32 @@ export function TaskSheet({
             placeholder="What needs to happen?"
             required
           />
+        </label>
+
+        <label>
+          Description
+          <textarea
+            value={draft.description}
+            onChange={(event) => setDraft((prev) => ({ ...prev, description: event.target.value }))}
+            placeholder="Notes, context, next step"
+            rows={3}
+          />
+        </label>
+
+        <label>
+          Priority
+          <select
+            value={draft.priority}
+            onChange={(event) =>
+              setDraft((prev) => ({ ...prev, priority: Number(event.target.value) as Priority }))
+            }
+          >
+            {PRIORITIES.map((priority) => (
+              <option key={priority} value={priority}>
+                {priority}
+              </option>
+            ))}
+          </select>
         </label>
 
         <fieldset>

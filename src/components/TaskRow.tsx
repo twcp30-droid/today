@@ -26,7 +26,13 @@ export function TaskRow({ task, date, featured = false, onToggle, onEdit }: Task
         {done ? '✓' : ''}
       </button>
       <div className="task-body">
-        <p className="task-title">{task.title}</p>
+        <p className="task-title">
+          <span className={`prio-dot prio-${task.priority}`} aria-hidden="true">
+            {task.priority}
+          </span>
+          <span className="task-title-text">{task.title}</span>
+        </p>
+        {task.description ? <p className="task-desc">{task.description}</p> : null}
         <p className="task-meta">
           {recurrenceLabel(task.recurrence)}
           {origin ? ` · rolled from ${formatShort(origin)}` : ''}

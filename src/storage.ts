@@ -1,6 +1,6 @@
 import { todayISO } from './dates'
 import { buildSeed } from './seed'
-import { SECTIONS, type Recurrence, type SectionId, type Task } from './types'
+import { DEFAULT_PRIORITY, SECTIONS, isPriority, type Recurrence, type SectionId, type Task } from './types'
 
 export const STORAGE_KEY = 'today-tasks-v1'
 
@@ -63,7 +63,9 @@ export function parseStoredState(raw: string): StoredState {
     throw new Error('invalid payload')
   }
   const record = parsed as Record<string, unknown>
-  const tasks = Array.isArray(record.tasks) ? record.tasks.filter(isValidTask) : []
+  const tasks = Array.isArray(record.tasks)
+    ? record.tasks.map(parseTask).filter((task): task is Task => task !== null)
+    : []
   const mostImportantObjective =
     typeof record.mostImportantObjective === 'string' ? record.mostImportantObjective : ''
   const updatedAt =
@@ -73,18 +75,30 @@ export function parseStoredState(raw: string): StoredState {
   return { version: 1, tasks, mostImportantObjective, updatedAt }
 }
 
-function isValidTask(value: unknown): value is Task {
-  if (typeof value !== 'object' || value === null || Array.isArray(value)) return false
+/** Accepts current and older task blobs. Missing priority/description get defaults. */
+export function parseTask(value: unknown): Task | null {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) return null
   const task = value as Record<string, unknown>
-  if (typeof task.id !== 'string' || typeof task.title !== 'string') return false
-  if (!SECTIONS.includes(task.section as SectionId)) return false
-  if (typeof task.dueDate !== 'string' || typeof task.createdAt !== 'string') return false
-  if (typeof task.isMit !== 'boolean') return false
-  if (!isValidRecurrence(task.recurrence)) return false
+  if (typeof task.id !== 'string' || typeof task.title !== 'string') return null
+  if (!SECTIONS.includes(task.section as SectionId)) return null
+  if (typeof task.dueDate !== 'string' || typeof task.createdAt !== 'string') return null
+  if (typeof task.isMit !== 'boolean') return null
+  if (!isValidRecurrence(task.recurrence)) return null
   if (!Array.isArray(task.completedDates) || !task.completedDates.every((d) => typeof d === 'string')) {
-    return false
+    return null
   }
-  return true
+  return {
+    id: task.id,
+    title: task.title,
+    description: typeof task.description === 'string' ? task.description : '',
+    section: task.section as SectionId,
+    isMit: task.isMit,
+    dueDate: task.dueDate,
+    priority: isPriority(task.priority) ? task.priority : DEFAULT_PRIORITY,
+    recurrence: task.recurrence,
+    completedDates: task.completedDates,
+    createdAt: task.createdAt,
+  }
 }
 
 function isValidRecurrence(value: unknown): value is Recurrence {

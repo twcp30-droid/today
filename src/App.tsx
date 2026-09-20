@@ -1,11 +1,14 @@
 import { useMemo, useState } from 'react'
+import { AppNav } from './components/AppNav'
 import { MonthCalendar } from './components/MonthCalendar'
 import { MostImportantObjective } from './components/MostImportantObjective'
 import { SectionCard } from './components/SectionCard'
 import { SyncSettings } from './components/SyncSettings'
+import { TablesView } from './components/TablesView'
 import { TaskSheet } from './components/TaskSheet'
 import { UpcomingList } from './components/UpcomingList'
 import { formatLong, parseISODate, todayISO } from './dates'
+import { useHashView } from './hooks/useHashView'
 import { useTasks } from './hooks/useTasks'
 import { useTheme } from './hooks/useTheme'
 import { appearsOn } from './recurrence'
@@ -33,6 +36,7 @@ export default function App() {
   } = useTasks()
   const { theme, toggleTheme } = useTheme()
   const sync = useSync(stored, replaceStored)
+  const [view] = useHashView()
   const [syncOpen, setSyncOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState(today)
   const selected = parseISODate(selectedDate)
@@ -71,15 +75,17 @@ export default function App() {
   }
 
   return (
-    <div className="app">
+    <div className={`app ${view === 'tables' ? 'is-tables' : ''}`}>
       <header className="top">
         <div>
           <p className="eyebrow">Tim’s tracker</p>
-          <h1>Today</h1>
-          <p className="lede">{formatLong(selectedDate)}</p>
+          <h1>{view === 'tables' ? 'Tables' : 'Today'}</h1>
+          <p className="lede">
+            {view === 'tables' ? 'All tasks by section' : formatLong(selectedDate)}
+          </p>
         </div>
         <div className="top-actions">
-          {selectedDate !== today ? (
+          {view === 'today' && selectedDate !== today ? (
             <button type="button" className="ghost-btn" onClick={() => selectDate(today)}>
               Jump to today
             </button>
@@ -102,42 +108,54 @@ export default function App() {
         </div>
       </header>
 
-      <MostImportantObjective value={mostImportantObjective} onSave={setMostImportantObjective} />
+      {view === 'today' ? (
+        <>
+          <MostImportantObjective value={mostImportantObjective} onSave={setMostImportantObjective} />
 
-      <MonthCalendar
-        year={year}
-        month={month}
-        selectedDate={selectedDate}
-        todayDate={today}
-        tasks={tasks}
-        onSelectDate={selectDate}
-        onPrevMonth={() => shiftMonth(-1)}
-        onNextMonth={() => shiftMonth(1)}
-      />
+          <MonthCalendar
+            year={year}
+            month={month}
+            selectedDate={selectedDate}
+            todayDate={today}
+            tasks={tasks}
+            onSelectDate={selectDate}
+            onPrevMonth={() => shiftMonth(-1)}
+            onNextMonth={() => shiftMonth(1)}
+          />
 
-      <p className="progress">
-        {progress.due === 0
-          ? 'Nothing assigned to this day'
-          : `${progress.done} of ${progress.due} complete`}
-      </p>
+          <p className="progress">
+            {progress.due === 0
+              ? 'Nothing assigned to this day'
+              : `${progress.done} of ${progress.due} complete`}
+          </p>
 
-      {SECTIONS.map((section) => (
-        <SectionCard
-          key={section}
-          section={section}
-          date={selectedDate}
-          tasks={tasks.filter((task) => task.section === section)}
-          onAdd={(isMit) => openSheet({ section, isMit, editing: null })}
-          onToggle={(id) => toggleComplete(id, selectedDate)}
+          {SECTIONS.map((section) => (
+            <SectionCard
+              key={section}
+              section={section}
+              date={selectedDate}
+              tasks={tasks.filter((task) => task.section === section)}
+              onAdd={(isMit) => openSheet({ section, isMit, editing: null })}
+              onToggle={(id) => toggleComplete(id, selectedDate)}
+              onEdit={(task) => openSheet({ section: task.section, isMit: task.isMit, editing: task })}
+            />
+          ))}
+
+          <UpcomingList
+            tasks={tasks}
+            date={selectedDate}
+            onEdit={(task) => openSheet({ section: task.section, isMit: task.isMit, editing: task })}
+          />
+        </>
+      ) : (
+        <TablesView
+          tasks={tasks}
+          onSave={upsert}
           onEdit={(task) => openSheet({ section: task.section, isMit: task.isMit, editing: task })}
         />
-      ))}
+      )}
 
-      <UpcomingList
-        tasks={tasks}
-        date={selectedDate}
-        onEdit={(task) => openSheet({ section: task.section, isMit: task.isMit, editing: task })}
-      />
+      <AppNav view={view} />
 
       <TaskSheet
         key={sheetKey}
