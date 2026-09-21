@@ -611,7 +611,7 @@ h1 {
 
 .task-table {
   width: 100%;
-  min-width: 680px;
+  min-width: 720px;
   border-collapse: collapse;
 }
 
@@ -631,9 +631,71 @@ h1 {
   font-weight: 600;
 }
 
-.task-table td:first-child,
-.task-table th:first-child {
+.task-table .done-col,
+.task-table .done-cell {
+  width: 56px;
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.task-table .prio-col,
+.task-table .prio-cell {
   width: 88px;
+}
+
+.done-label {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+}
+
+.done-check {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  border-radius: 99px;
+  border: 2px solid var(--accent);
+  background: transparent;
+  cursor: pointer;
+}
+
+.done-check:checked {
+  background: var(--accent);
+}
+
+.done-mark {
+  position: absolute;
+  width: 6px;
+  height: 10px;
+  border: solid transparent;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -2px);
+  pointer-events: none;
+}
+
+.done-check:checked + .done-mark {
+  border-color: var(--on-accent);
+}
+
+.done-check:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.task-table tr.is-done td:not(.done-cell) {
+  opacity: 0.72;
+}
+
+.task-table tr.is-done input[type='text'] {
+  text-decoration: line-through;
+  color: var(--muted);
 }
 
 .task-table td:last-child,

@@ -31,3 +31,14 @@ export function newTask(input: NewTaskInput): Task {
 export function patchTask(task: Task, updates: Partial<Task>): Task {
   return { ...task, ...updates }
 }
+
+/** Add or remove one day in `completedDates`. Same list the day view toggles. */
+export function toggleCompletedOn(task: Task, date: string): Task {
+  const done = task.completedDates.includes(date)
+  return {
+    ...task,
+    completedDates: done
+      ? task.completedDates.filter((entry) => entry !== date)
+      : [...task.completedDates, date],
+  }
+}

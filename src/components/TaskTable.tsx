@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { todayISO } from '../dates'
+import { isCompletedOn } from '../recurrence'
 import { newTask, patchTask } from '../task'
 import { DEFAULT_TABLE_SORT, sortTasks, toggleSort, type SortKey, type SortSpec } from '../tableSort'
 import {
@@ -15,10 +16,11 @@ interface TaskTableProps {
   section: SectionId
   tasks: Task[]
   onSave: (task: Task) => void
+  onToggleComplete: (id: string, date: string) => void
   onEdit: (task: Task) => void
 }
 
-export function TaskTable({ section, tasks, onSave, onEdit }: TaskTableProps) {
+export function TaskTable({ section, tasks, onSave, onToggleComplete, onEdit }: TaskTableProps) {
   const meta = SECTION_META[section]
   const [sort, setSort] = useState<SortSpec>(DEFAULT_TABLE_SORT)
   const rows = sortTasks(
@@ -53,7 +55,10 @@ export function TaskTable({ section, tasks, onSave, onEdit }: TaskTableProps) {
         <table className="task-table">
           <thead>
             <tr>
-              <th aria-sort={sortAria('priority')}>
+              <th className="done-col" scope="col">
+                Done
+              </th>
+              <th className="prio-col" aria-sort={sortAria('priority')}>
                 <button type="button" className="sort-btn" onClick={() => setSort((prev) => toggleSort(prev, 'priority'))}>
                   Priority <span aria-hidden="true">{sortLabel('priority')}</span>
                 </button>
@@ -73,13 +78,19 @@ export function TaskTable({ section, tasks, onSave, onEdit }: TaskTableProps) {
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={5} className="table-empty">
+                <td colSpan={6} className="table-empty">
                   No tasks yet. Add a row below.
                 </td>
               </tr>
             ) : (
               rows.map((task) => (
-                <TaskTableRow key={task.id} task={task} onSave={onSave} onEdit={onEdit} />
+                <TaskTableRow
+                  key={task.id}
+                  task={task}
+                  onSave={onSave}
+                  onToggleComplete={onToggleComplete}
+                  onEdit={onEdit}
+                />
               ))
             )}
           </tbody>
@@ -95,15 +106,38 @@ export function TaskTable({ section, tasks, onSave, onEdit }: TaskTableProps) {
 function TaskTableRow({
   task,
   onSave,
+  onToggleComplete,
   onEdit,
 }: {
   task: Task
   onSave: (task: Task) => void
+  onToggleComplete: (id: string, date: string) => void
   onEdit: (task: Task) => void
 }) {
+  const done = isCompletedOn(task, task.dueDate)
+
   return (
-    <tr>
-      <td>
+    <tr className={done ? 'is-done' : undefined}>
+      <td className="done-cell">
+        <label className="done-label">
+          <input
+            type="checkbox"
+            className="done-check"
+            checked={done}
+            aria-label={
+              done
+                ? `Mark ${task.title} incomplete for ${task.dueDate}`
+                : `Complete ${task.title} for ${task.dueDate}`
+            }
+            onChange={() => {
+              if (!task.dueDate) return
+              onToggleComplete(task.id, task.dueDate)
+            }}
+          />
+          <span className="done-mark" aria-hidden="true" />
+        </label>
+      </td>
+      <td className="prio-cell">
         <PrioritySelect
           value={task.priority}
           labelledBy={`priority-${task.id}`}
@@ -183,7 +217,8 @@ function AddTaskRow({ section, onSave }: { section: SectionId; onSave: (task: Ta
 
   return (
     <tr className="add-row">
-      <td>
+      <td className="done-cell" />
+      <td className="prio-cell">
         <PrioritySelect value={priority} labelledBy={`add-priority-${section}`} onChange={setPriority} />
         <span className="sr-only" id={`add-priority-${section}`}>
           Priority for new {SECTION_META[section].label} task
