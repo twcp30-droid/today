@@ -151,6 +151,7 @@ export default function App() {
         <TablesView
           tasks={tasks}
           onSave={upsert}
+          onToggleComplete={toggleComplete}
           onEdit={(task) => openSheet({ section: task.section, isMit: task.isMit, editing: task })}
         />
       )}

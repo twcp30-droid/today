@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { loadState, saveState, touchState, type StoredState } from '../storage'
+import { toggleCompletedOn } from '../task'
 import type { Task } from '../types'
 
 export function useTasks() {
@@ -39,18 +40,7 @@ export function useTasks() {
   }
 
   function toggleComplete(id: string, date: string) {
-    mutate((prev) =>
-      prev.map((item) => {
-        if (item.id !== id) return item
-        const done = item.completedDates.includes(date)
-        return {
-          ...item,
-          completedDates: done
-            ? item.completedDates.filter((entry) => entry !== date)
-            : [...item.completedDates, date],
-        }
-      }),
-    )
+    mutate((prev) => prev.map((item) => (item.id === id ? toggleCompletedOn(item, date) : item)))
   }
 
   return {

@@ -8,7 +8,7 @@ Each section has one Most Important Task plus regular work. Pick a calendar day 
 
 A standing **Most Important Objective** sits above the month calendar. It is text only (no checkbox, no due date) and stays the same every day until you edit it.
 
-**Tables** (bottom nav, or `#/tables`) is a second screen with one spreadsheet-style table per section. Each row has **priority** (1–5, default 3), **title**, **description**, and **due date**. Click a sortable header to sort ascending/descending; the other column is kept as a tie-breaker. Adds and edits write the same `today-tasks-v1` document as the day view, including the encrypted sync blob. Older tasks without priority land at 3.
+**Tables** (bottom nav, or `#/tables`) is a second screen with one spreadsheet-style table per section. Each row has a **Done** checkbox, **priority** (1–5, default 3), **title**, **description**, and **due date**. Done checks or unchecks that row’s due date in `completedDates` — the same list the Today day view uses — so a completion on either screen shows up on the other and in the encrypted sync blob. Click a sortable header to sort ascending/descending; the other column is kept as a tie-breaker. Adds and edits write the same `today-tasks-v1` document as the day view. Older tasks without priority land at 3.
 
 Each device keeps a **localStorage** cache. Optional **passphrase-encrypted sync** shares one encrypted blob through a free Supabase project. Tasks and the standing objective are encrypted in the browser before upload. The Pages repo never stores plaintext tasks.
 
