@@ -1,4 +1,5 @@
 import { appearsOn } from '../recurrence'
+import { formatScore, scoreTasks } from '../score'
 import { SECTION_META, type SectionId, type Task } from '../types'
 import { TaskRow } from './TaskRow'
 
@@ -14,6 +15,7 @@ interface SectionCardProps {
 export function SectionCard({ section, date, tasks, onAdd, onToggle, onEdit }: SectionCardProps) {
   const meta = SECTION_META[section]
   const dayTasks = tasks.filter((task) => appearsOn(task, date))
+  const score = scoreTasks(tasks, date)
   const mit = dayTasks.find((task) => task.isMit)
   const rest = dayTasks.filter((task) => !task.isMit)
 
@@ -21,7 +23,14 @@ export function SectionCard({ section, date, tasks, onAdd, onToggle, onEdit }: S
     <section className={`section section-${section}`}>
       <header className="section-head">
         <div>
-          <h3>{meta.label}</h3>
+          <div className="section-title-row">
+            <h3>{meta.label}</h3>
+            <p className="section-score">
+              <span className="sr-only">{meta.label} score </span>
+              {formatScore(score)}
+              <span className="sr-only"> points</span>
+            </p>
+          </div>
           <p>{meta.hint}</p>
         </div>
         <button type="button" className="add-btn" onClick={() => onAdd(false)}>

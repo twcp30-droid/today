@@ -15,6 +15,11 @@
   --me: #3f6b3a;
   --shadow: 0 12px 30px rgba(60, 40, 20, 0.08);
   --radius: 20px;
+  --objective-bg: #fff3d0;
+  --objective-border: #a16207;
+  --objective-label: #7c4a03;
+  --objective-mark: #a16207;
+  --objective-mark-ink: #fffaf2;
   font-family: Figtree, ui-sans-serif, system-ui, sans-serif;
   background: var(--bg);
   color: var(--ink);
@@ -36,6 +41,11 @@
   --scada: #fdba74;
   --me: #86efac;
   --shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  --objective-bg: #3a2c14;
+  --objective-border: #f0c36a;
+  --objective-label: #f6d48a;
+  --objective-mark: #f0c36a;
+  --objective-mark-ink: #1c1408;
 }
 
 * {
@@ -96,7 +106,6 @@ h1 {
 }
 
 .lede,
-.progress,
 .upcoming-hint,
 .section-head p,
 .empty,
@@ -106,8 +115,7 @@ h1 {
   color: var(--muted);
 }
 
-.lede,
-.progress {
+.lede {
   margin: 8px 0 0;
 }
 
@@ -227,9 +235,83 @@ h1 {
   background: currentColor;
 }
 
-.progress {
+.daily-quote {
   margin: 0 0 14px;
-  font-size: 0.92rem;
+  padding: 0 2px;
+}
+
+.daily-quote blockquote {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+.daily-quote blockquote::before {
+  content: '\201C';
+}
+
+.daily-quote blockquote::after {
+  content: '\201D';
+}
+
+.daily-quote figcaption {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.daily-quote figcaption::before {
+  content: '\2014 ';
+}
+
+.day-score {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.day-score-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.day-score strong {
+  font-family: 'Bricolage Grotesque', Figtree, sans-serif;
+  font-size: 1.55rem;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.day-score-meta {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.section-title-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.section-score {
+  margin: 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.95rem;
+  color: var(--ink);
 }
 
 .sr-only {
@@ -245,13 +327,29 @@ h1 {
 }
 
 .objective-label {
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   font-size: 0.72rem;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--objective-label);
   font-family: Figtree, ui-sans-serif, system-ui, sans-serif;
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.objective-mark {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: var(--objective-mark);
+  color: var(--objective-mark-ink);
+}
+
+.objective-body {
+  flex: 1;
+  min-width: 0;
 }
 
 .objective-text {
@@ -262,28 +360,32 @@ h1 {
   background: transparent;
   color: inherit;
   cursor: pointer;
-  padding: 6px 0;
-  font: inherit;
-  font-weight: 600;
-  font-size: 1.05rem;
-  line-height: 1.35;
+  padding: 2px 0 4px;
+  font-family: 'Bricolage Grotesque', Figtree, sans-serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 
 .objective-text.is-empty {
-  color: var(--muted);
-  font-weight: 500;
+  color: var(--objective-label);
+  font-weight: 700;
 }
 
 .objective textarea {
   width: 100%;
-  border: 1px solid var(--line);
-  background: var(--bg);
+  border: 1px solid var(--objective-border);
+  background: color-mix(in srgb, var(--paper) 72%, var(--objective-bg));
   color: inherit;
   border-radius: 12px;
   padding: 10px 12px;
-  min-height: 72px;
+  min-height: 84px;
   resize: vertical;
-  font: inherit;
+  font-family: 'Bricolage Grotesque', Figtree, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 .objective-actions {
@@ -294,7 +396,11 @@ h1 {
 }
 
 .objective {
-  background: color-mix(in srgb, var(--accent) 8%, var(--paper));
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--objective-bg);
+  border: 2px solid var(--objective-border);
 }
 
 .section-head {

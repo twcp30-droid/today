@@ -1,6 +1,6 @@
 {
-  "name": "Today",
-  "short_name": "Today",
+  "name": "MITOR",
+  "short_name": "MITOR",
   "description": "Tim's daily task tracker for Systems, SCADA, and Me.",
   "id": "/today/",
   "start_url": "/today/",
