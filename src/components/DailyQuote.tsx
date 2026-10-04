@@ -1,4 +1,4 @@
-import { quoteForDate } from '../quotes'
+import { quoteForDate } from '../quoteSelection'
 
 interface DailyQuoteProps {
   date: string

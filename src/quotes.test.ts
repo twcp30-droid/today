@@ -1,5 +1,6 @@
 import { addDays } from './dates'
-import { QUOTES, quoteForDate, quoteIndex } from './quotes'
+import { quoteForDate, quoteIndex } from './quoteSelection'
+import { QUOTES } from './quotes'
 
 describe('daily quotes', () => {
   it('ships a bundled list of at least 60 attributed quotes', () => {
