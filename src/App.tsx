@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { AppNav } from './components/AppNav'
+import { DailyQuote } from './components/DailyQuote'
 import { MonthCalendar } from './components/MonthCalendar'
 import { MostImportantObjective } from './components/MostImportantObjective'
 import { SectionCard } from './components/SectionCard'
@@ -12,6 +13,7 @@ import { useHashView } from './hooks/useHashView'
 import { useTasks } from './hooks/useTasks'
 import { useTheme } from './hooks/useTheme'
 import { appearsOn } from './recurrence'
+import { formatScore, scoreDay } from './score'
 import { useSync } from './sync/useSync'
 import { SECTIONS, type SectionId, type Task } from './types'
 
@@ -55,6 +57,7 @@ export default function App() {
     setSheet({ open: true, ...next })
   }
 
+  const scores = useMemo(() => scoreDay(tasks, selectedDate), [tasks, selectedDate])
   const progress = useMemo(() => {
     const due = tasks.filter((task) => appearsOn(task, selectedDate))
     const done = due.filter((task) => task.completedDates.includes(selectedDate))
@@ -110,7 +113,22 @@ export default function App() {
 
       {view === 'today' ? (
         <>
+          <DailyQuote date={selectedDate} />
+
           <MostImportantObjective value={mostImportantObjective} onSave={setMostImportantObjective} />
+
+          <p className="day-score">
+            <span className="day-score-label">Score</span>
+            <strong>
+              {formatScore(scores.overall)}
+              <span className="sr-only"> points</span>
+            </strong>
+            <span className="day-score-meta">
+              {progress.due === 0
+                ? 'Nothing due this day'
+                : `${progress.done} of ${progress.due} tasks`}
+            </span>
+          </p>
 
           <MonthCalendar
             year={year}
@@ -122,12 +140,6 @@ export default function App() {
             onPrevMonth={() => shiftMonth(-1)}
             onNextMonth={() => shiftMonth(1)}
           />
-
-          <p className="progress">
-            {progress.due === 0
-              ? 'Nothing assigned to this day'
-              : `${progress.done} of ${progress.due} complete`}
-          </p>
 
           {SECTIONS.map((section) => (
             <SectionCard
@@ -149,6 +161,7 @@ export default function App() {
         </>
       ) : (
         <TablesView
+          date={selectedDate}
           tasks={tasks}
           onSave={upsert}
           onToggleComplete={toggleComplete}

@@ -1,0 +1,305 @@
+export interface Quote {
+  text: string
+  author: string
+}
+
+/**
+ * Bundled, accurately attributed lines. Selection is a pure function of the
+ * calendar date so every device shows the same quote with no network call.
+ */
+export const QUOTES: readonly Quote[] = [
+  { text: 'Nothing great was ever achieved without enthusiasm.', author: 'Ralph Waldo Emerson' },
+  { text: 'The only way to have a friend is to be one.', author: 'Ralph Waldo Emerson' },
+  { text: 'Finish each day and be done with it. You have done what you could.', author: 'Ralph Waldo Emerson' },
+  { text: 'Write it on your heart that every day is the best day in the year.', author: 'Ralph Waldo Emerson' },
+  { text: 'Do what you can, with what you have, where you are.', author: 'Theodore Roosevelt' },
+  { text: 'It is hard to fail, but it is worse never to have tried to succeed.', author: 'Theodore Roosevelt' },
+  { text: 'Comparison is the thief of joy.', author: 'Theodore Roosevelt' },
+  { text: 'Keep your eyes on the stars, and your feet on the ground.', author: 'Theodore Roosevelt' },
+  {
+    text: 'Far and away the best prize that life has to offer is the chance to work hard at work worth doing.',
+    author: 'Theodore Roosevelt',
+  },
+  { text: 'You must do the thing you think you cannot do.', author: 'Eleanor Roosevelt' },
+  { text: 'No one can make you feel inferior without your consent.', author: 'Eleanor Roosevelt' },
+  { text: 'Life is either a daring adventure or nothing at all.', author: 'Helen Keller' },
+  { text: 'Alone we can do so little; together we can do so much.', author: 'Helen Keller' },
+  { text: 'Optimism is the faith that leads to achievement.', author: 'Helen Keller' },
+  {
+    text: 'Although the world is full of suffering, it is also full of the overcoming of it.',
+    author: 'Helen Keller',
+  },
+  { text: 'If there is no struggle, there is no progress.', author: 'Frederick Douglass' },
+  { text: 'The time is always right to do what is right.', author: 'Martin Luther King Jr.' },
+  {
+    text: 'Darkness cannot drive out darkness; only light can do that. Hate cannot drive out hate; only love can do that.',
+    author: 'Martin Luther King Jr.',
+  },
+  { text: 'Injustice anywhere is a threat to justice everywhere.', author: 'Martin Luther King Jr.' },
+  { text: 'We must accept finite disappointment, but never lose infinite hope.', author: 'Martin Luther King Jr.' },
+  { text: 'Out of the mountain of despair, a stone of hope.', author: 'Martin Luther King Jr.' },
+  { text: "It always seems impossible until it's done.", author: 'Nelson Mandela' },
+  {
+    text: 'Education is the most powerful weapon which you can use to change the world.',
+    author: 'Nelson Mandela',
+  },
+  {
+    text: 'I learned that courage was not the absence of fear, but the triumph over it.',
+    author: 'Nelson Mandela',
+  },
+  { text: 'Nothing will work unless you do.', author: 'Maya Angelou' },
+  { text: "Try to be a rainbow in someone's cloud.", author: 'Maya Angelou' },
+  {
+    text: "If you don't like something, change it. If you can't change it, change your attitude.",
+    author: 'Maya Angelou',
+  },
+  {
+    text: 'You may not control all the events that happen to you, but you can decide not to be reduced by them.',
+    author: 'Maya Angelou',
+  },
+  {
+    text: 'How wonderful it is that nobody need wait a single moment before starting to improve the world.',
+    author: 'Anne Frank',
+  },
+  { text: 'Whoever is happy will make others happy too.', author: 'Anne Frank' },
+  { text: "I don't think of all the misery, but of the beauty that still remains.", author: 'Anne Frank' },
+  {
+    text: 'When we are no longer able to change a situation, we are challenged to change ourselves.',
+    author: 'Viktor E. Frankl',
+  },
+  { text: 'He who has a why to live can bear almost any how.', author: 'Friedrich Nietzsche' },
+  { text: 'There are far, far better things ahead than any we leave behind.', author: 'C. S. Lewis' },
+  { text: 'We are all in the gutter, but some of us are looking at the stars.', author: 'Oscar Wilde' },
+  { text: 'To live is the rarest thing in the world. Most people exist, that is all.', author: 'Oscar Wilde' },
+  { text: 'Experience is simply the name we give our mistakes.', author: 'Oscar Wilde' },
+  {
+    text: 'Go confidently in the direction of your dreams. Live the life you have imagined.',
+    author: 'Henry David Thoreau',
+  },
+  { text: 'Things do not change; we change.', author: 'Henry David Thoreau' },
+  { text: 'Our life is frittered away by detail. Simplify, simplify.', author: 'Henry David Thoreau' },
+  { text: 'Well done is better than well said.', author: 'Benjamin Franklin' },
+  { text: 'Lost time is never found again.', author: 'Benjamin Franklin' },
+  { text: 'An investment in knowledge pays the best interest.', author: 'Benjamin Franklin' },
+  { text: 'Energy and persistence conquer all things.', author: 'Benjamin Franklin' },
+  { text: 'Either write something worth reading or do something worth writing.', author: 'Benjamin Franklin' },
+  { text: 'Genius is one percent inspiration and ninety-nine percent perspiration.', author: 'Thomas Edison' },
+  {
+    text: 'Failure is simply the opportunity to begin again, this time more intelligently.',
+    author: 'Henry Ford',
+  },
+  { text: "Don't find fault, find a remedy.", author: 'Henry Ford' },
+  { text: 'Nothing in this world can take the place of persistence.', author: 'Calvin Coolidge' },
+  { text: 'The secret of success is constancy to purpose.', author: 'Benjamin Disraeli' },
+  {
+    text: 'Patience and perseverance have a magical effect before which difficulties disappear and obstacles vanish.',
+    author: 'John Quincy Adams',
+  },
+  { text: 'Great works are performed not by strength, but by perseverance.', author: 'Samuel Johnson' },
+  { text: 'The future is purchased by the present.', author: 'Samuel Johnson' },
+  {
+    text: 'What do we live for, if it is not to make life less difficult for each other?',
+    author: 'George Eliot',
+  },
+  { text: 'I am not afraid of storms, for I am learning how to sail my ship.', author: 'Louisa May Alcott' },
+  { text: 'Every great dream begins with a dreamer.', author: 'Harriet Tubman' },
+  { text: 'The way to right wrongs is to turn the light of truth upon them.', author: 'Ida B. Wells' },
+  { text: 'I attribute my success to this: I never gave or took any excuse.', author: 'Florence Nightingale' },
+  {
+    text: 'Be not afraid of life. Believe that life is worth living, and your belief will help create the fact.',
+    author: 'William James',
+  },
+  {
+    text: 'You are today where your thoughts have brought you; you will be tomorrow where your thoughts take you.',
+    author: 'James Allen',
+  },
+  { text: 'The best way out is always through.', author: 'Robert Frost' },
+  {
+    text: "In three words I can sum up everything I've learned about life: It goes on.",
+    author: 'Robert Frost',
+  },
+  { text: 'Hope is the thing with feathers that perches in the soul.', author: 'Emily Dickinson' },
+  { text: 'Forever is composed of nows.', author: 'Emily Dickinson' },
+  {
+    text: 'Hold fast to dreams, for if dreams die, life is a broken-winged bird that cannot fly.',
+    author: 'Langston Hughes',
+  },
+  {
+    text: 'Not everything that is faced can be changed, but nothing can be changed until it is faced.',
+    author: 'James Baldwin',
+  },
+  { text: 'The fault, dear Brutus, is not in our stars, but in ourselves.', author: 'William Shakespeare' },
+  { text: 'Love all, trust a few, do wrong to none.', author: 'William Shakespeare' },
+  { text: 'We know what we are, but know not what we may be.', author: 'William Shakespeare' },
+  { text: 'The unexamined life is not worth living.', author: 'Socrates' },
+  { text: 'The beginning is the most important part of the work.', author: 'Plato' },
+  { text: 'Happiness depends upon ourselves.', author: 'Aristotle' },
+  { text: 'Well begun is half done.', author: 'Aristotle' },
+  { text: 'We suffer more often in imagination than in reality.', author: 'Seneca' },
+  { text: 'While we are postponing, life speeds by.', author: 'Seneca' },
+  { text: 'Begin at once to live, and count each separate day as a separate life.', author: 'Seneca' },
+  { text: 'If a man knows not to which port he sails, no wind is favorable.', author: 'Seneca' },
+  { text: 'As long as you live, keep learning how to live.', author: 'Seneca' },
+  { text: 'Difficulties strengthen the mind, as labor does the body.', author: 'Seneca' },
+  { text: 'Associate with people who are likely to improve you.', author: 'Seneca' },
+  {
+    text: 'You have power over your mind — not outside events. Realize this, and you will find strength.',
+    author: 'Marcus Aurelius',
+  },
+  { text: 'Waste no more time arguing about what a good man should be. Be one.', author: 'Marcus Aurelius' },
+  { text: 'What stands in the way becomes the way.', author: 'Marcus Aurelius' },
+  { text: 'The happiness of your life depends upon the quality of your thoughts.', author: 'Marcus Aurelius' },
+  {
+    text: 'Very little is needed to make a happy life; it is all within yourself, in your way of thinking.',
+    author: 'Marcus Aurelius',
+  },
+  { text: 'Dwell on the beauty of life. Watch the stars, and see yourself running with them.', author: 'Marcus Aurelius' },
+  { text: 'If it is not right, do not do it; if it is not true, do not say it.', author: 'Marcus Aurelius' },
+  {
+    text: 'When you arise in the morning, think of what a privilege it is to be alive.',
+    author: 'Marcus Aurelius',
+  },
+  { text: 'People are not disturbed by things, but by the views they take of them.', author: 'Epictetus' },
+  { text: 'First say to yourself what you would be; and then do what you have to do.', author: 'Epictetus' },
+  { text: 'No man is free who is not master of himself.', author: 'Epictetus' },
+  { text: 'Wealth consists not in having great possessions, but in having few wants.', author: 'Epictetus' },
+  { text: 'Make the best use of what is in your power, and take the rest as it happens.', author: 'Epictetus' },
+  { text: 'The journey of a thousand miles begins with a single step.', author: 'Lao Tzu' },
+  { text: 'Life is like riding a bicycle. To keep your balance, you must keep moving.', author: 'Albert Einstein' },
+  { text: 'The important thing is not to stop questioning.', author: 'Albert Einstein' },
+  { text: 'Imagination is more important than knowledge.', author: 'Albert Einstein' },
+  { text: 'Nothing in life is to be feared, it is only to be understood.', author: 'Marie Curie' },
+  { text: 'I was taught that the way of progress was neither swift nor easy.', author: 'Marie Curie' },
+  { text: 'Be less curious about people and more curious about ideas.', author: 'Marie Curie' },
+  { text: 'The most difficult thing is the decision to act. The rest is merely tenacity.', author: 'Amelia Earhart' },
+  { text: 'The most effective way to do it, is to do it.', author: 'Amelia Earhart' },
+  { text: 'Make each day your masterpiece.', author: 'John Wooden' },
+  { text: "Don't let what you cannot do interfere with what you can do.", author: 'John Wooden' },
+  {
+    text: 'Perfection is not attainable, but if we chase perfection we can catch excellence.',
+    author: 'Vince Lombardi',
+  },
+  {
+    text: "I've failed over and over and over again in my life. And that is why I succeed.",
+    author: 'Michael Jordan',
+  },
+  { text: 'The only way to do great work is to love what you do.', author: 'Steve Jobs' },
+  { text: 'Be kind whenever possible. It is always possible.', author: 'Dalai Lama' },
+  { text: 'Happiness is not something ready made. It comes from your own actions.', author: 'Dalai Lama' },
+  { text: 'They can because they think they can.', author: 'Virgil' },
+  { text: 'Begin, be bold, and venture to be wise.', author: 'Horace' },
+  { text: 'Learning never exhausts the mind.', author: 'Leonardo da Vinci' },
+  { text: 'I am still learning.', author: 'Michelangelo' },
+  { text: 'If I have seen further, it is by standing on the shoulders of giants.', author: 'Isaac Newton' },
+  {
+    text: 'All truths are easy to understand once they are discovered; the point is to discover them.',
+    author: 'Galileo Galilei',
+  },
+  { text: 'No one knows what he can do until he tries.', author: 'Publilius Syrus' },
+  { text: 'Always do right. This will gratify some people and astonish the rest.', author: 'Mark Twain' },
+  { text: 'Courage is resistance to fear, mastery of fear, not absence of fear.', author: 'Mark Twain' },
+  { text: 'Somewhere, something incredible is waiting to be known.', author: 'Carl Sagan' },
+  {
+    text: 'The most dangerous phrase in the language is, "We\'ve always done it this way."',
+    author: 'Grace Hopper',
+  },
+  { text: 'A ship in harbor is safe, but that is not what ships are built for.', author: 'John A. Shedd' },
+  {
+    text: 'It is only with the heart that one can see rightly; what is essential is invisible to the eye.',
+    author: 'Antoine de Saint-Exupéry',
+  },
+  {
+    text: 'Fight for the things that you care about, but do it in a way that will lead others to join you.',
+    author: 'Ruth Bader Ginsburg',
+  },
+  { text: 'Real change, enduring change, happens one step at a time.', author: 'Ruth Bader Ginsburg' },
+  { text: 'One child, one teacher, one book, and one pen can change the world.', author: 'Malala Yousafzai' },
+  {
+    text: 'Never, ever be afraid to make some noise and get in good trouble, necessary trouble.',
+    author: 'John Lewis',
+  },
+  { text: 'Not all of us can do great things. But we can do small things with great love.', author: 'Mother Teresa' },
+  {
+    text: 'Strength does not come from physical capacity. It comes from an indomitable will.',
+    author: 'Mahatma Gandhi',
+  },
+  {
+    text: 'Happiness is when what you think, what you say, and what you do are in harmony.',
+    author: 'Mahatma Gandhi',
+  },
+  {
+    text: 'Success is to be measured not so much by the position that one has reached in life as by the obstacles which he has overcome.',
+    author: 'Booker T. Washington',
+  },
+  {
+    text: 'Invest in the human soul. Who knows, it might be a diamond in the rough.',
+    author: 'Mary McLeod Bethune',
+  },
+  { text: 'Truth is powerful and it prevails.', author: 'Sojourner Truth' },
+  { text: 'Dreaming, after all, is a form of planning.', author: 'Gloria Steinem' },
+  { text: 'Like what you do, and then you will do your best.', author: 'Katherine Johnson' },
+  {
+    text: "Never limit yourself because of others' limited imagination; never limit others because of your own limited imagination.",
+    author: 'Mae Jemison',
+  },
+  { text: 'I am deliberate and afraid of nothing.', author: 'Audre Lorde' },
+  { text: 'Never give in. Never, never, never, never.', author: 'Winston Churchill' },
+  { text: 'Knowing is not enough; we must apply. Willing is not enough; we must do.', author: 'Johann Wolfgang von Goethe' },
+  { text: 'We are what we think. All that we are arises with our thoughts.', author: 'Buddha' },
+  { text: 'No one saves us but ourselves. No one can and no one may. We ourselves must walk the path.', author: 'Buddha' },
+  { text: 'To see what is right and not to do it is want of courage.', author: 'Confucius' },
+  { text: 'The superior man is modest in his speech, but exceeds in his actions.', author: 'Confucius' },
+  {
+    text: 'Learning is not attained by chance, it must be sought for with ardor and attended to with diligence.',
+    author: 'Abigail Adams',
+  },
+  {
+    text: 'The first principle is that you must not fool yourself — and you are the easiest person to fool.',
+    author: 'Richard P. Feynman',
+  },
+  { text: 'There is no charm equal to tenderness of heart.', author: 'Jane Austen' },
+  {
+    text: "Success isn't about how much money you make. It's about the difference you make in people's lives.",
+    author: 'Michelle Obama',
+  },
+  { text: 'Turn your wounds into wisdom.', author: 'Oprah Winfrey' },
+  {
+    text: 'Doing the best at this moment puts you in the best place for the next moment.',
+    author: 'Oprah Winfrey',
+  },
+  {
+    text: 'Change will not come if we wait for some other person or some other time.',
+    author: 'Barack Obama',
+  },
+  {
+    text: 'We draw our strength from the very despair in which we have been forced to live.',
+    author: 'Cesar Chavez',
+  },
+  {
+    text: 'Every moment is an organizing opportunity, every person a potential activist, every minute a chance to change the world.',
+    author: 'Dolores Huerta',
+  },
+  {
+    text: 'We are what we repeatedly do. Excellence, then, is not an act, but a habit.',
+    author: 'Will Durant',
+  },
+  { text: 'I am a slow walker, but I never walk back.', author: 'Abraham Lincoln' },
+]
+
+const FNV_OFFSET = 0x811c9dc5
+const FNV_PRIME = 0x01000193
+
+/** Stable bucket for a calendar day. The same date always lands on the same quote. */
+export function quoteIndex(isoDate: string, length = QUOTES.length): number {
+  if (length <= 0) return 0
+  let hash = FNV_OFFSET
+  for (let i = 0; i < isoDate.length; i += 1) {
+    hash ^= isoDate.charCodeAt(i)
+    hash = Math.imul(hash, FNV_PRIME)
+  }
+  return (hash >>> 0) % length
+}
+
+export function quoteForDate(isoDate: string, quotes: readonly Quote[] = QUOTES): Quote {
+  return quotes[quoteIndex(isoDate, quotes.length)]
+}

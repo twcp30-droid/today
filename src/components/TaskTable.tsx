@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { todayISO } from '../dates'
 import { isCompletedOn } from '../recurrence'
+import { formatScore, scoreTasks } from '../score'
 import { newTask, patchTask } from '../task'
 import { DEFAULT_TABLE_SORT, sortTasks, toggleSort, type SortKey, type SortSpec } from '../tableSort'
 import {
@@ -14,19 +15,19 @@ import {
 
 interface TaskTableProps {
   section: SectionId
+  date: string
   tasks: Task[]
   onSave: (task: Task) => void
   onToggleComplete: (id: string, date: string) => void
   onEdit: (task: Task) => void
 }
 
-export function TaskTable({ section, tasks, onSave, onToggleComplete, onEdit }: TaskTableProps) {
+export function TaskTable({ section, date, tasks, onSave, onToggleComplete, onEdit }: TaskTableProps) {
   const meta = SECTION_META[section]
   const [sort, setSort] = useState<SortSpec>(DEFAULT_TABLE_SORT)
-  const rows = sortTasks(
-    tasks.filter((task) => task.section === section),
-    sort,
-  )
+  const sectionTasks = tasks.filter((task) => task.section === section)
+  const score = scoreTasks(sectionTasks, date)
+  const rows = sortTasks(sectionTasks, sort)
 
   function sortAria(key: SortKey): 'ascending' | 'descending' | 'none' {
     if (sort.primary.key !== key) return 'none'
@@ -44,7 +45,14 @@ export function TaskTable({ section, tasks, onSave, onToggleComplete, onEdit }: 
     <section className={`section table-card section-${section}`}>
       <header className="section-head">
         <div>
-          <h3>{meta.label}</h3>
+          <div className="section-title-row">
+            <h3>{meta.label}</h3>
+            <p className="section-score">
+              <span className="sr-only">{meta.label} score </span>
+              {formatScore(score)}
+              <span className="sr-only"> points</span>
+            </p>
+          </div>
           <p>
             {meta.hint} · {rows.length} {rows.length === 1 ? 'task' : 'tasks'}
           </p>
