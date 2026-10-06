@@ -25,6 +25,19 @@ export interface Task {
   recurrence: Recurrence
   completedDates: string[]
   createdAt: string
+  /**
+   * Last edit of task fields (title, description, priority, due date,
+   * recurrence, section, MIT flag, and the rest of the body).
+   * Missing on older blobs; merge treats that as time 0.
+   * Completion check-offs do not bump this.
+   */
+  updatedAt?: string
+  /**
+   * Last check or uncheck for each YYYY-MM-DD. A date listed here but absent
+   * from `completedDates` was unchecked at that time, so the uncheck can win
+   * over an older check from the other device.
+   */
+  completionUpdatedAt?: Record<string, string>
 }
 
 export function isPriority(value: unknown): value is Priority {

@@ -13,6 +13,7 @@ export function sampleTask(title: string, updatedAt: string): StoredState {
     recurrence: { kind: 'weekdays' },
     completedDates: ['2026-09-16'],
     createdAt: updatedAt,
+    updatedAt,
   }
   return { version: 1, tasks: [task], mostImportantObjective: '', updatedAt }
 }

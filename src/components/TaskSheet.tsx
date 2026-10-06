@@ -101,6 +101,7 @@ export function TaskSheet({
       priority: draft.priority,
       recurrence: recurrenceFromDraft(draft),
       completedDates: editing?.completedDates,
+      completionUpdatedAt: editing?.completionUpdatedAt,
       createdAt: editing?.createdAt,
     })
     onSave(task)

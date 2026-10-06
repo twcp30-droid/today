@@ -37,7 +37,16 @@ Preview is at http://localhost:4173/today/.
 2. The app derives a blob id: `SHA-256(app-salt || normalized passphrase)`. There are no user accounts.
 3. The planner (`today-tasks-v1`: tasks, MITs, completions, recurrence, standing objective) is encrypted with **Web Crypto AES-GCM**. The key is **PBKDF2-SHA-256** (210,000 iterations) using a random salt stored only inside the ciphertext envelope.
 4. Supabase stores `{ id, ciphertext, updated_at }`. The database cannot read your tasks.
-5. **Merge (v1):** last-write-wins for the whole document, using `updatedAt`. Sync the device that already has tasks first, then the empty phone/PC so it pulls instead of uploading a blank planner.
+5. **Merge:** Sync pulls and decrypts the cloud blob, merges it with this device, and saves the result locally. It uploads that merged blob when it differs from the cloud copy. It does not replace one side with the other.
+
+### Conflict rules
+
+- **Tasks** merge by id. A task that exists on only one device is kept. Title, description, priority, due date, recurrence, section, and the Most Important Task flag travel as one snapshot. Each task has `updatedAt`, set on create and on every edit of those fields. The newer snapshot wins. A missing timestamp counts as 0, so the first merge of two older copies keeps the union of tasks.
+- **Equal timestamps** (clock skew, or two old copies) do not flip-flop. The same task keeps the lexicographically later canonical snapshot. If a section ends up with two Most Important Tasks, the newer one stays and a tie breaks to the greater task id.
+- **Completions** merge per task and per date. Checking a box on either device survives. Unchecking writes a per-date timestamp, and the latest action for that date wins. When those timestamps tie, including two copies that have no timestamps yet, the date stays complete if either side completed it.
+- **Deletes** write a tombstone `{ id, deletedAt }` instead of only dropping the row. The other device will not bring the task back. A task edited *after* the delete is kept (its `updatedAt` is strictly newer than `deletedAt`). If the edit is older or the timestamps are equal, the delete wins. A completion check does not count as that newer edit. Tombstones older than 60 days are dropped; a device that stayed offline longer than that can reintroduce the task.
+- **Most Important Objective** has its own `mostImportantObjectiveUpdatedAt`. The newer text wins. If the timestamps tie, a non-empty note beats an empty one.
+- **First launch** has no document `updatedAt`. That sample planner is not merged into an existing cloud blob; the device loads the cloud copy. After you edit anything, this device joins the merge.
 
 ### Passphrase tips
 
