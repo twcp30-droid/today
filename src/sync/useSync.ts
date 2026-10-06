@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { StoredState } from '../storage'
 import { readSyncConfig } from "./config";
 import { syncAppState } from "./engine";
+import { samePlanner } from "./merge";
 import {
   forgetPassphrase,
   loadLastSync,
@@ -83,7 +84,7 @@ export function useSync(
         setDetail(null);
         return;
       }
-      if (result.action === "pulled") {
+      if (!samePlanner(result.state, stateRef.current) || result.state.updatedAt !== stateRef.current.updatedAt) {
         skipAutoPush.current = true;
         setState(result.state);
       }

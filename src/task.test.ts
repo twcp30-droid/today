@@ -24,4 +24,16 @@ describe('toggleCompletedOn', () => {
     expect(undone.completedDates).toEqual(['2026-09-20'])
     expect(isCompletedOn(undone, undone.dueDate)).toBe(false)
   })
+
+  it('records the check and uncheck time without marking the task body edited', () => {
+    const stamped = { ...task, updatedAt: '2026-09-01T00:00:00.000Z' }
+    const at = '2026-09-21T15:00:00.000Z'
+    const done = toggleCompletedOn(stamped, task.dueDate, at)
+    expect(done.updatedAt).toBe(stamped.updatedAt)
+    expect(done.completionUpdatedAt).toEqual({ [task.dueDate]: at })
+    const undone = toggleCompletedOn(done, task.dueDate, '2026-09-21T16:00:00.000Z')
+    expect(undone.completedDates).toEqual(['2026-09-20'])
+    expect(undone.completionUpdatedAt?.[task.dueDate]).toBe('2026-09-21T16:00:00.000Z')
+    expect(undone.updatedAt).toBe(stamped.updatedAt)
+  })
 })

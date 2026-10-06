@@ -66,8 +66,9 @@ export function SyncSettings(props: {
           then stored as an opaque blob. This device still keeps a localStorage cache.
         </p>
         <p className="upcoming-hint">
-          Merge is last-write-wins for the whole planner (by updatedAt). Sync the device that already
-          has tasks first, then the empty one.
+          Sync pulls the other device, merges by task, then uploads the combined planner. A newer
+          edit wins. Check-offs from both devices are kept, and a delete sticks unless that task was
+          edited after it was deleted.
         </p>
 
         {props.status.configured ? (

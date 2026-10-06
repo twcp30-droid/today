@@ -89,6 +89,34 @@ describe('parseStoredState', () => {
     expect(parsed.tasks[0].description).toBe('Start with the flood.')
   })
 
+  it('keeps tasks that have no timestamps and loads tombstones', () => {
+    const parsed = parseStoredState(
+      JSON.stringify({
+        version: 1,
+        tasks: [
+          {
+            id: 'old-2',
+            title: 'No clock yet',
+            section: 'me',
+            isMit: false,
+            dueDate: '2026-09-16',
+            recurrence: { kind: 'once' },
+            completedDates: ['2026-09-16'],
+            createdAt: '2026-09-01T00:00:00.000Z',
+            completionUpdatedAt: { '2026-09-16': '2026-09-16T08:00:00.000Z', bad: 'nope' },
+          },
+        ],
+        tombstones: [{ id: 'gone', deletedAt: '2026-09-10T00:00:00.000Z' }, { id: '' }],
+        mostImportantObjectiveUpdatedAt: '2026-09-12T00:00:00.000Z',
+      }),
+    )
+    expect(parsed.tasks[0].updatedAt).toBeUndefined()
+    expect(parsed.tasks[0].completedDates).toEqual(['2026-09-16'])
+    expect(parsed.tasks[0].completionUpdatedAt).toEqual({ '2026-09-16': '2026-09-16T08:00:00.000Z' })
+    expect(parsed.tombstones).toEqual([{ id: 'gone', deletedAt: '2026-09-10T00:00:00.000Z' }])
+    expect(parsed.mostImportantObjectiveUpdatedAt).toBe('2026-09-12T00:00:00.000Z')
+  })
+
   it('defaults an out-of-range priority', () => {
     const parsed = parseStoredState(
       JSON.stringify({
