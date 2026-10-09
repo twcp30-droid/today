@@ -1,32 +1,8 @@
--- Opaque encrypted planner blobs. Clients never send plaintext tasks.
--- Run this in the Supabase SQL editor (free tier). No Auth users are required.
+-- Fix Postgres 42702: column reference "id" is ambiguous
+-- (PL/pgSQL RETURNS TABLE variables vs table columns, especially ON CONFLICT (id)).
+-- Safe to re-run in the SQL editor if 001 was already applied.
+-- New installs should run 001 only; it already includes this fix.
 
-create table if not exists public.today_blobs (
-  id text primary key check (id ~ '^[0-9a-f]{64}$'),
-  ciphertext text not null check (char_length(ciphertext) > 0 and char_length(ciphertext) <= 1000000),
-  updated_at timestamptz not null
-);
-
-comment on table public.today_blobs is
-  'AES-GCM envelopes for the Today PWA. id is SHA-256(app salt || passphrase).';
-
-alter table public.today_blobs enable row level security;
-
-revoke all on table public.today_blobs from public, anon, authenticated;
-
--- Defense in depth: even if table grants are added later, direct REST listing/writes fail.
-drop policy if exists today_blobs_no_select on public.today_blobs;
-drop policy if exists today_blobs_no_insert on public.today_blobs;
-drop policy if exists today_blobs_no_update on public.today_blobs;
-drop policy if exists today_blobs_no_delete on public.today_blobs;
-
-create policy today_blobs_no_select on public.today_blobs for select to anon, authenticated using (false);
-create policy today_blobs_no_insert on public.today_blobs for insert to anon, authenticated with check (false);
-create policy today_blobs_no_update on public.today_blobs for update to anon, authenticated using (false) with check (false);
-create policy today_blobs_no_delete on public.today_blobs for delete to anon, authenticated using (false);
-
--- RETURNS TABLE(id, ...) creates PL/pgSQL variables that collide with column
--- names (Postgres 42702), especially ON CONFLICT (id). Prefer table columns.
 create or replace function public.today_get_blob(blob_id text)
 returns table (id text, ciphertext text, updated_at timestamptz)
 language plpgsql
