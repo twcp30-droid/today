@@ -1,3 +1,4 @@
+import { orderDayTasks } from '../dayOrder'
 import { appearsOn } from '../recurrence'
 import { formatScore, scoreTasks } from '../score'
 import { SECTION_META, type SectionId, type Task } from '../types'
@@ -17,7 +18,10 @@ export function SectionCard({ section, date, tasks, onAdd, onToggle, onEdit }: S
   const dayTasks = tasks.filter((task) => appearsOn(task, date))
   const score = scoreTasks(tasks, date)
   const mit = dayTasks.find((task) => task.isMit)
-  const rest = dayTasks.filter((task) => !task.isMit)
+  const rest = orderDayTasks(
+    dayTasks.filter((task) => !task.isMit),
+    date,
+  )
 
   return (
     <section className={`section section-${section}`}>

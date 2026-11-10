@@ -145,21 +145,22 @@ export function TaskSheet({
           />
         </label>
 
-        <label>
-          Priority
-          <select
-            value={draft.priority}
-            onChange={(event) =>
-              setDraft((prev) => ({ ...prev, priority: Number(event.target.value) as Priority }))
-            }
-          >
+        <fieldset>
+          <legend>Priority</legend>
+          <div className="seg prio-seg">
             {PRIORITIES.map((priority) => (
-              <option key={priority} value={priority}>
+              <button
+                key={priority}
+                type="button"
+                className={draft.priority === priority ? 'is-on' : ''}
+                aria-pressed={draft.priority === priority}
+                onClick={() => setDraft((prev) => ({ ...prev, priority }))}
+              >
                 {priority}
-              </option>
+              </button>
             ))}
-          </select>
-        </label>
+          </div>
+        </fieldset>
 
         <fieldset>
           <legend>Section</legend>
