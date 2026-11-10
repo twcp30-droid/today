@@ -612,7 +612,6 @@ h1 {
 .sheet input[type='date'],
 .sheet input[type='number'],
 .sheet input:not([type='checkbox']),
-.sheet select,
 .sheet textarea {
   width: 100%;
   border: 1px solid var(--line);
@@ -646,6 +645,15 @@ h1 {
   background: var(--accent);
   color: var(--on-accent);
   border-color: var(--accent);
+}
+
+.prio-seg {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.prio-seg button {
+  padding-inline: 0;
 }
 
 .check-row {
